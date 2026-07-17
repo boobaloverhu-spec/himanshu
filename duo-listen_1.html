@@ -6,183 +6,332 @@
 <title>Together — one room, one song</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08060f; --purple:#7c3aed; --purple-2:#4c1d95; --rose:#fb7185;
-  --glass: rgba(255,255,255,0.045); --glass-strong: rgba(255,255,255,0.075); --line: rgba(255,255,255,0.09);
-  --text:#f5f3ff; --text-dim:#9d94b8;
-  --font-display:'Playfair Display', Georgia, serif; --font-body:'Inter', system-ui, sans-serif;
+  --bg:#08060f;
+  --purple:#7c3aed; --purple-2:#4c1d95; --purple-light:#a78bfa;
+  --rose:#fb7185; --rose-light:#fda4af;
+  --song-accent: 251,113,133;
+  --song-accent-2: 124,58,237;
+  --glass: rgba(255,255,255,0.045);
+  --glass-strong: rgba(255,255,255,0.08);
+  --glass-hover: rgba(255,255,255,0.1);
+  --line: rgba(255,255,255,0.09);
+  --line-strong: rgba(255,255,255,0.16);
+  --text:#f5f3ff;
+  --text-dim:#9d94b8;
+  --text-faint:#6b6285;
+  --success:#4ade80;
+  --danger:#fb7185;
+  --font-display:'Playfair Display', Georgia, serif;
+  --font-body:'Inter', system-ui, sans-serif;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
 }
 *{box-sizing:border-box;}
 html,body{margin:0; padding:0; height:100%;}
 body{
-  background: radial-gradient(ellipse 80% 60% at 20% -10%, rgba(124,58,237,0.35), transparent),
-              radial-gradient(ellipse 70% 50% at 90% 10%, rgba(251,113,133,0.18), transparent),
-              radial-gradient(ellipse 60% 50% at 50% 100%, rgba(76,29,149,0.35), transparent),
-              var(--bg);
-  color: var(--text); font-family: var(--font-body); min-height:100vh; overflow-x:hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(124,58,237,0.35), transparent),
+    radial-gradient(ellipse 70% 50% at 90% 10%, rgba(251,113,133,0.18), transparent),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(76,29,149,0.35), transparent),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing: antialiased;
 }
 ::selection{background: rgba(124,58,237,0.4);}
-button{font-family: inherit;}
-img{-webkit-user-drag:none;}
+button{font-family: inherit; -webkit-tap-highlight-color: transparent;}
+img{-webkit-user-drag:none; user-select:none;}
+a{color: var(--rose-light);}
+::-webkit-scrollbar{width:6px; height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background: rgba(255,255,255,0.12); border-radius:6px;}
+::-webkit-scrollbar-thumb:hover{background: rgba(255,255,255,0.22);}
 
-/* ---------- Aurora particles ---------- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+:focus-visible{ outline: 2px solid var(--rose); outline-offset: 2px; border-radius: 4px; }
+
 .aurora-particle{
   position:fixed; border-radius:50%; filter:blur(1px); pointer-events:none; z-index:0;
   background: radial-gradient(circle, rgba(255,255,255,0.5), transparent 70%);
   animation: floaty 14s ease-in-out infinite;
 }
-@keyframes floaty{ 0%,100%{ transform: translateY(0) translateX(0);} 50%{ transform: translateY(-30px) translateX(15px);} }
+@keyframes floaty{ 0%,100%{ transform: translateY(0) translateX(0); } 50%{ transform: translateY(-30px) translateX(15px); } }
 
-/* ---------- Landing ---------- */
-#landing{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 20px; position:relative; z-index:1;}
+#landing{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:40px 20px; position:relative; z-index:1; animation: landingIn 0.8s var(--ease-out);
+}
+@keyframes landingIn{ from{ opacity:0; } to{ opacity:1; } }
 .logo-mark{
   width:64px; height:64px; border-radius:20px; margin-bottom:22px;
   background: linear-gradient(135deg, var(--purple), var(--rose));
   display:flex; align-items:center; justify-content:center; font-size:28px;
-  box-shadow: 0 0 50px rgba(124,58,237,0.55); animation: pulse-logo 3s ease-in-out infinite;
+  box-shadow: 0 0 50px rgba(124,58,237,0.55);
+  animation: pulseLogo 3s ease-in-out infinite, dropIn 0.7s var(--ease-spring);
 }
-@keyframes pulse-logo{ 0%,100%{ box-shadow: 0 0 40px rgba(124,58,237,0.5);} 50%{ box-shadow: 0 0 70px rgba(251,113,133,0.5);} }
-#landing h1{ font-family: var(--font-display); font-size: clamp(40px,8vw,72px); font-weight:600; margin:0 0 14px; letter-spacing:-1px;
-  background: linear-gradient(135deg, #fff, #c9b8ff 60%, var(--rose)); -webkit-background-clip:text; background-clip:text; color:transparent;}
-#landing p.tagline{ font-size: clamp(15px,2.5vw,19px); color:var(--text-dim); margin:0 0 36px; max-width:480px;}
-.cta-row{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:56px;}
+@keyframes pulseLogo{ 0%,100%{ box-shadow: 0 0 40px rgba(124,58,237,0.5); } 50%{ box-shadow: 0 0 70px rgba(251,113,133,0.5); } }
+@keyframes dropIn{ from{ transform: translateY(-40px) scale(0.6); opacity:0; } to{ transform:none; opacity:1; } }
+#landing h1{
+  font-family: var(--font-display); font-size: clamp(40px,8vw,72px); font-weight:600;
+  margin:0 0 14px; letter-spacing:-1px;
+  background: linear-gradient(135deg, #fff, #c9b8ff 60%, var(--rose));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation: riseIn 0.7s var(--ease-out) 0.1s both;
+}
+#landing p.tagline{ font-size: clamp(15px,2.5vw,19px); color:var(--text-dim); margin:0 0 36px; max-width:480px; animation: riseIn 0.7s var(--ease-out) 0.22s both; }
+@keyframes riseIn{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+.cta-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:56px; animation: riseIn 0.7s var(--ease-out) 0.32s both; }
 .cta{
-  padding:14px 30px; border-radius:100px; font-size:15px; font-weight:600; cursor:pointer; border:none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position:relative; overflow:hidden; padding:15px 32px; border-radius:100px; font-size:15px; font-weight:600; cursor:pointer; border:none;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
 }
 .cta:hover{ transform: translateY(-2px); }
 .cta:active{ transform: translateY(0) scale(0.97); }
-.cta.primary{ background: linear-gradient(135deg, var(--purple), var(--rose)); color:#fff; box-shadow: 0 8px 30px rgba(124,58,237,0.45);}
-.cta.primary:hover{ box-shadow: 0 10px 40px rgba(251,113,133,0.5);}
-.cta.ghost{ background: var(--glass); color: var(--text); border:1px solid var(--line); backdrop-filter: blur(12px);}
-
+.cta.primary{ background: linear-gradient(135deg, var(--purple), var(--rose)); color:#fff; box-shadow: 0 8px 30px rgba(124,58,237,0.45); }
+.cta.primary:hover{ box-shadow: 0 10px 44px rgba(251,113,133,0.55); }
 .preview-card{
   width:min(420px, 88vw); border-radius:24px; background: var(--glass-strong); border:1px solid var(--line);
   backdrop-filter: blur(20px); padding:22px; display:flex; align-items:center; gap:14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4); animation: rise 1s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4); animation: riseIn 0.9s var(--ease-out) 0.45s both;
 }
-@keyframes rise{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;} }
 .preview-avatars{display:flex;}
-.preview-avatars .av{width:36px; height:36px; border-radius:50%; border:2px solid var(--bg); margin-left:-10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600;}
+.preview-avatars .av{ width:36px; height:36px; border-radius:50%; border:2px solid var(--bg); margin-left:-10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
 .preview-avatars .av:first-child{margin-left:0; background:linear-gradient(135deg,var(--purple),#a78bfa);}
 .preview-avatars .av:last-child{background:linear-gradient(135deg,var(--rose),#fda4af);}
 .preview-wave{display:flex; align-items:center; gap:2px; height:22px; flex:1;}
-.preview-wave span{width:3px; background: linear-gradient(var(--rose), var(--purple)); border-radius:2px; animation: wavebar 1s ease-in-out infinite;}
+.preview-wave span{ width:3px; background: linear-gradient(var(--rose), var(--purple)); border-radius:2px; animation: wavebar 1s ease-in-out infinite; }
 @keyframes wavebar{ 0%,100%{height:20%;} 50%{height:100%;} }
 .preview-text{font-size:13px; color:var(--text-dim); text-align:left;}
 .preview-text b{color:var(--text); font-weight:600;}
+.scroll-hint{ position:absolute; bottom:24px; font-size:11px; color: var(--text-faint); letter-spacing:0.5px; animation: bob 2s ease-in-out infinite; }
+@keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
 
-/* ---------- App shell ---------- */
-#app{display:none; min-height:100vh; position:relative; z-index:1;}
-#app.active{display:flex;}
-.sidebar{ width:270px; flex-shrink:0; padding:22px 16px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:22px;}
-.sidebar.right{ border-right:none; border-left:1px solid var(--line); width:320px;}
-.panel-title{font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--text-dim); margin:0 0 10px; font-weight:600;}
-.glass{ background: var(--glass); border:1px solid var(--line); border-radius:18px; backdrop-filter: blur(16px);}
+#app{ display:none; min-height:100vh; position:relative; z-index:1; flex-direction:column; }
+#app.active{ display:flex; animation: appIn 0.5s var(--ease-out); }
+@keyframes appIn{ from{opacity:0;} to{opacity:1;} }
+.topbar{ display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-bottom:1px solid var(--line); flex-shrink:0; }
+.topbar-left{ display:flex; align-items:center; gap:10px; }
+.topbar-logo{ width:30px; height:30px; border-radius:9px; background: linear-gradient(135deg, var(--purple), var(--rose)); display:flex; align-items:center; justify-content:center; font-size:14px; }
+.topbar-title{ font-family: var(--font-display); font-size:16px; font-weight:600; }
+.conn-pill{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-dim); padding:5px 12px; border-radius:100px; background: var(--glass); border:1px solid var(--line); }
+.conn-dot{ width:6px; height:6px; border-radius:50%; background:#6b6285; }
+.conn-dot.ok{ background: var(--success); box-shadow: 0 0 6px var(--success); animation: connPulse 2s ease-in-out infinite; }
+@keyframes connPulse{ 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+.topbar-right{ display:flex; align-items:center; gap:8px; }
+.icon-btn{
+  background: var(--glass); border:1px solid var(--line); color:var(--text); width:36px; height:36px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px;
+  transition: all 0.15s var(--ease-out);
+}
+.icon-btn:hover{ border-color: var(--rose); background: var(--glass-hover); transform: translateY(-1px); }
+.app-body{ display:flex; flex:1; min-height:0; }
+.sidebar{ width:270px; flex-shrink:0; padding:22px 16px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:22px; overflow-y:auto; }
+.sidebar.right{ border-right:none; border-left:1px solid var(--line); width:330px; }
+.panel-title{ font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--text-dim); margin:0 0 10px; font-weight:700; display:flex; align-items:center; justify-content:space-between; }
+.glass{ background: var(--glass); border:1px solid var(--line); border-radius:var(--radius-md); backdrop-filter: blur(16px); transition: border-color 0.2s ease, background 0.2s ease; }
+.profile-row{ display:flex; align-items:center; gap:10px; padding:12px; }
+.profile-av{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--rose)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; transition: transform 0.2s var(--ease-spring); }
+.profile-row input{ background:transparent; border:none; color:var(--text); font-size:14px; font-weight:600; width:100%; outline:none; font-family: var(--font-body); }
+.profile-row input::placeholder{ color:var(--text-dim); font-weight:400; }
+.member-list{ padding:6px; }
+.member{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:12px; transition: background 0.15s ease; animation: memberIn 0.3s var(--ease-out); }
+@keyframes memberIn{ from{opacity:0; transform:translateX(-6px);} to{opacity:1; transform:none;} }
+.member:hover{ background: rgba(255,255,255,0.04); }
+.m-dot{ width:8px; height:8px; border-radius:50%; background:#4b5563; flex-shrink:0; transition: all 0.3s ease; }
+.m-dot.online{ background: var(--rose); box-shadow:0 0 8px var(--rose); animation: memberPulse 2s ease-in-out infinite; }
+@keyframes memberPulse{ 0%,100%{box-shadow:0 0 6px var(--rose);} 50%{box-shadow:0 0 12px var(--rose);} }
+.m-name{ font-size:13px; font-weight:600; flex:1; }
+.m-status{ font-size:11px; color:var(--text-dim); transition: color 0.2s ease; }
+.m-status.live{ color: var(--rose-light); }
+.invite-row{ display:flex; gap:8px; padding:12px; }
+.invite-row button{ flex:1; background: var(--glass-strong); border:1px solid var(--line); color:var(--text); padding:9px; border-radius:10px; font-size:12px; cursor:pointer; transition: all 0.15s var(--ease-out); }
+.invite-row button:hover{ border-color: var(--rose); transform: translateY(-1px); }
+.leave-btn{ margin-top:auto; background:none; border:1px solid var(--line); color:var(--text-dim); padding:10px; border-radius:12px; font-size:12px; cursor:pointer; transition: all 0.15s ease; }
+.leave-btn:hover{ color:var(--rose); border-color: var(--rose); }
 
-.profile-row{display:flex; align-items:center; gap:10px; padding:12px; }
-.profile-av{width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--rose)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;}
-.profile-row input{background:transparent; border:none; color:var(--text); font-size:14px; font-weight:600; width:100%; outline:none; font-family: var(--font-body);}
-.profile-row input::placeholder{color:var(--text-dim); font-weight:400;}
-
-.member-list{padding:6px;}
-.member{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; transition: background 0.15s ease;}
-.member:hover{background: rgba(255,255,255,0.03);}
-.m-dot{width:8px; height:8px; border-radius:50%; background:#4b5563; flex-shrink:0; transition: all 0.3s ease;}
-.m-dot.online{background: var(--rose); box-shadow:0 0 8px var(--rose);}
-.m-name{font-size:13px; font-weight:600; flex:1;}
-.m-status{font-size:11px; color:var(--text-dim);}
-
-.invite-row{display:flex; gap:8px; padding:12px;}
-.invite-row button{flex:1; background: var(--glass-strong); border:1px solid var(--line); color:var(--text); padding:9px; border-radius:10px; font-size:12px; cursor:pointer; transition: border-color 0.15s ease;}
-.invite-row button:hover{border-color: var(--rose);}
-.leave-btn{ margin-top:auto; background:none; border:1px solid var(--line); color:var(--text-dim); padding:10px; border-radius:12px; font-size:12px; cursor:pointer;}
-.leave-btn:hover{color:var(--rose); border-color: var(--rose);}
-
-/* ---------- Center player ---------- */
-.center{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; min-width:0;}
-.player-card{width:100%; max-width:460px; border-radius:28px; padding:28px; text-align:center; box-shadow: 0 30px 80px rgba(0,0,0,0.5);}
-.art-wrap{position:relative; width:100%; aspect-ratio:1; border-radius:22px; overflow:hidden; margin-bottom:22px; background: linear-gradient(135deg,#1a1130,#2a1743); box-shadow: 0 20px 50px rgba(124,58,237,0.25);}
-.art-wrap img{width:100%; height:100%; object-fit:cover; transition: transform 8s ease;}
-.art-wrap.playing img{transform: scale(1.06);}
-.art-glow{position:absolute; inset:0; background: radial-gradient(circle at 50% 100%, rgba(251,113,133,0.35), transparent 60%); opacity:0; transition: opacity 0.4s ease;}
-.art-wrap.playing .art-glow{opacity:1;}
-.yt-hidden{position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;}
-
-.song-title{font-family: var(--font-display); font-size:21px; font-weight:600; margin:0 0 4px; line-height:1.3;}
-.song-artist{font-size:13px; color:var(--text-dim); margin:0 0 20px;}
-
-.waveform{display:flex; align-items:flex-end; justify-content:center; gap:3px; height:28px; margin-bottom:14px;}
-.waveform span{width:3px; background:linear-gradient(var(--rose),var(--purple)); border-radius:2px; height:20%; transition: height 0.15s ease;}
-.waveform.playing span{animation: wavebar 0.9s ease-in-out infinite;}
+.center{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px 84px; min-width:0; overflow-y:auto; }
+.player-card{ width:100%; max-width:460px; border-radius:var(--radius-lg); padding:28px; text-align:center; box-shadow: 0 30px 80px rgba(0,0,0,0.5); position:relative; }
+.player-card::before{
+  content:''; position:absolute; inset:-1px; border-radius:var(--radius-lg); z-index:-1;
+  background: linear-gradient(135deg, rgba(var(--song-accent-2),0.4), rgba(var(--song-accent),0.28), rgba(var(--song-accent-2),0.4));
+  opacity:0; transition: opacity 0.5s ease, background 0.6s ease; filter: blur(8px); background-size:200% 200%;
+}
+.player-card.is-playing::before{ opacity:1; animation: borderShimmer 6s linear infinite; }
+@keyframes borderShimmer{ 0%{ background-position: 0% 50%; } 100%{ background-position: 200% 50%; } }
+.art-wrap{
+  position:relative; width:100%; aspect-ratio:1; border-radius:22px; overflow:hidden; margin-bottom:22px;
+  background: linear-gradient(135deg,#1a1130,#2a1743); box-shadow: 0 20px 50px rgba(var(--song-accent-2),0.25);
+  cursor: pointer; transition: transform 0.3s var(--ease-out), box-shadow 0.6s ease;
+}
+.art-wrap:hover{ transform: scale(1.015); }
+.art-wrap img{ width:100%; height:100%; object-fit:cover; transition: opacity 0.35s ease, transform 8s ease; opacity:1; }
+.art-wrap img.crossfading{ opacity:0; }
+.art-wrap.playing img{ transform: scale(1.06); }
+.art-glow{ position:absolute; inset:0; background: radial-gradient(circle at 50% 100%, rgba(var(--song-accent),0.4), transparent 60%); opacity:0; transition: opacity 0.4s ease, background 0.6s ease; }
+.art-wrap.playing .art-glow{ opacity:1; }
+.art-expand-hint{ position:absolute; bottom:10px; right:10px; background: rgba(0,0,0,0.4); backdrop-filter: blur(6px); border-radius:8px; padding:5px 9px; font-size:10px; opacity:0; transition: opacity 0.2s ease; }
+.art-wrap:hover .art-expand-hint{ opacity:1; }
+.yt-hidden{ position:absolute; width:320px; height:180px; left:-9999px; top:-9999px; pointer-events:none; }
+.song-title-row{ display:flex; align-items:center; justify-content:center; gap:8px; }
+.song-title{ font-family: var(--font-display); font-size:21px; font-weight:600; margin:0 0 4px; line-height:1.3; transition: opacity 0.25s ease; }
+.song-title.crossfading{ opacity:0; }
+.song-artist{ font-size:13px; color:var(--text-dim); margin:0 0 20px; transition: opacity 0.25s ease; }
+.song-artist.crossfading{ opacity:0; }
+.like-btn{ background:none; border:none; cursor:pointer; font-size:16px; color: var(--text-faint); transition: transform 0.2s var(--ease-spring), color 0.2s ease; }
+.like-btn.liked{ color: var(--rose); animation: likePop 0.4s var(--ease-spring); }
+@keyframes likePop{ 0%{transform:scale(0.7);} 60%{transform:scale(1.3);} 100%{transform:scale(1);} }
+.waveform{ display:flex; align-items:flex-end; justify-content:center; gap:3px; height:28px; margin-bottom:14px; }
+.waveform span{ width:3px; background:linear-gradient(var(--rose),var(--purple)); border-radius:2px; height:20%; transition: height 0.15s ease; }
+.waveform.playing span{ animation: wavebar 0.9s ease-in-out infinite; }
 .waveform span:nth-child(2n){animation-delay:0.1s;}
 .waveform span:nth-child(3n){animation-delay:0.2s;}
 .waveform span:nth-child(4n){animation-delay:0.3s;}
+.waveform span:nth-child(5n){animation-delay:0.15s;}
+.progress-row{ display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.ptime{ font-size:11px; color:var(--text-dim); min-width:32px; font-variant-numeric: tabular-nums; }
+.pbar{ flex:1; height:5px; background: rgba(255,255,255,0.08); border-radius:3px; position:relative; cursor:pointer; }
+.pbar:hover .pbar-knob{ transform: translate(-50%,-50%) scale(1.3); }
+.pbar-fill{ position:absolute; left:0; top:0; height:100%; border-radius:3px; width:0%; background: linear-gradient(90deg, var(--purple), var(--rose)); transition: width 0.15s linear; box-shadow: 0 0 12px rgba(251,113,133,0.6); }
+.pbar-knob{ position:absolute; top:50%; width:12px; height:12px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); left:0%; transition: left 0.15s linear, transform 0.15s var(--ease-out); box-shadow:0 0 8px rgba(0,0,0,0.4); }
+.controls-row{ display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:20px; }
+.ctl{
+  position:relative; overflow:hidden; background: var(--glass-strong); border:1px solid var(--line); color:var(--text); width:42px; height:42px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; transition: all 0.15s var(--ease-out);
+}
+.ctl:hover{ border-color: var(--rose); transform: translateY(-2px); }
+.ctl:active{ transform: scale(0.9); }
+.ctl.active{ background: linear-gradient(135deg, var(--purple), var(--rose)); border-color:transparent; }
+.ctl.play{ width:56px; height:56px; font-size:19px; background: linear-gradient(135deg, var(--purple), var(--rose)); border:none; box-shadow: 0 8px 24px rgba(124,58,237,0.5); }
+.ctl.play:hover{ box-shadow: 0 10px 32px rgba(251,113,133,0.55); }
+.ctl.disabled{ opacity:0.3; pointer-events:none; }
+.ripple{ position:absolute; border-radius:50%; background: rgba(255,255,255,0.5); transform: scale(0); animation: rippleAnim 0.55s ease-out; pointer-events:none; }
+@keyframes rippleAnim{ to{ transform: scale(2.6); opacity:0; } }
+.extra-row{ display:flex; align-items:center; justify-content:center; gap:18px; font-size:12px; color:var(--text-dim); flex-wrap:wrap; }
+.extra-row .grp{ display:flex; align-items:center; gap:8px; }
+.extra-row input[type=range]{ width:80px; accent-color: var(--rose); cursor:pointer; }
+select.speed{ background: var(--glass-strong); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:4px 8px; font-size:12px; cursor:pointer; }
+.reactions-row{ display:flex; justify-content:center; gap:10px; margin-top:18px; }
+.reaction-btn{ background:none; border:none; font-size:22px; cursor:pointer; transition: transform 0.15s var(--ease-spring); opacity:0.8; }
+.reaction-btn:hover{ transform: scale(1.3) translateY(-3px); opacity:1; }
+.floating-emoji{ position:fixed; font-size:28px; pointer-events:none; z-index:100; animation: floatUp 2.2s ease-out forwards; }
+@keyframes floatUp{ 0%{ transform:translateY(0) scale(0.6) rotate(0deg); opacity:0; } 15%{ opacity:1; transform:translateY(-20px) scale(1.15) rotate(-5deg); } 100%{ transform:translateY(-170px) scale(1) rotate(8deg); opacity:0; } }
+.kbd-hint{ margin-top:16px; font-size:10.5px; color: var(--text-faint); display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.kbd-hint kbd{ background: var(--glass-strong); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-family: var(--font-body); }
 
-.progress-row{display:flex; align-items:center; gap:10px; margin-bottom:20px;}
-.ptime{font-size:11px; color:var(--text-dim); min-width:32px;}
-.pbar{flex:1; height:5px; background: rgba(255,255,255,0.08); border-radius:3px; position:relative; cursor:pointer;}
-.pbar-fill{position:absolute; left:0; top:0; height:100%; border-radius:3px; width:0%; background: linear-gradient(90deg, var(--purple), var(--rose)); transition: width 0.15s linear; box-shadow: 0 0 12px rgba(251,113,133,0.6);}
-.pbar-knob{position:absolute; top:50%; width:12px; height:12px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); left:0%; transition: left 0.15s linear; box-shadow:0 0 8px rgba(0,0,0,0.4);}
+#fullscreenArt{ position:fixed; inset:0; z-index:300; display:none; align-items:center; justify-content:center; background: rgba(5,3,12,0.88); backdrop-filter: blur(20px); animation: fadeIn 0.3s ease; }
+#fullscreenArt.active{ display:flex; }
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+#fullscreenArt img{ width:min(80vh,80vw); height:min(80vh,80vw); object-fit:cover; border-radius:28px; box-shadow: 0 40px 100px rgba(0,0,0,0.6); animation: artZoom 0.4s var(--ease-spring); }
+@keyframes artZoom{ from{ transform: scale(0.85); opacity:0; } to{ transform:none; opacity:1; } }
+.fs-close{ position:absolute; top:24px; right:28px; background: var(--glass-strong); border:1px solid var(--line); color:var(--text); width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:16px; }
 
-.controls-row{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:20px;}
-.ctl{background: var(--glass-strong); border:1px solid var(--line); color:var(--text); width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; transition: all 0.15s ease;}
-.ctl:hover{border-color: var(--rose); transform: translateY(-2px);}
-.ctl:active{transform: scale(0.92);}
-.ctl.active{background: linear-gradient(135deg, var(--purple), var(--rose)); border-color:transparent;}
-.ctl.play{width:56px; height:56px; font-size:19px; background: linear-gradient(135deg, var(--purple), var(--rose)); border:none; box-shadow: 0 8px 24px rgba(124,58,237,0.5);}
-.ctl.disabled{opacity:0.3; pointer-events:none;}
+.search-box{ display:flex; gap:8px; padding:10px; }
+.search-box input{ flex:1; background: rgba(255,255,255,0.04); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 12px; font-size:13px; outline:none; transition: border-color 0.15s ease; }
+.search-box input:focus{ border-color: var(--rose); }
+.search-box button{ position:relative; overflow:hidden; background: linear-gradient(135deg,var(--purple),var(--rose)); border:none; color:#fff; border-radius:10px; padding:0 16px; font-size:13px; cursor:pointer; min-width:60px; transition: transform 0.15s var(--ease-out); }
+.search-box button:hover{ transform: translateY(-1px); }
+.search-box button:disabled{ opacity:0.5; }
+.spinner{ width:13px; height:13px; border-radius:50%; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; animation: spin 0.7s linear infinite; display:inline-block; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+.tab-row{ display:flex; gap:4px; padding:0 12px; margin-bottom:6px; }
+.tab-btn{ flex:1; background:none; border:none; color:var(--text-dim); padding:8px; font-size:12px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; transition: all 0.15s ease; }
+.tab-btn.active{ color:var(--text); border-bottom-color: var(--rose); }
+.list-wrap{ padding:6px 10px; max-height: 42vh; overflow-y:auto; }
+.qitem{
+  display:flex; align-items:center; gap:8px; padding:8px; border-radius:12px; margin-bottom:6px;
+  background: rgba(255,255,255,0.03); animation: qin 0.3s var(--ease-out); cursor:pointer;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease; border:1px solid transparent;
+}
+@keyframes qin{ from{opacity:0; transform:translateX(6px);} to{opacity:1; transform:none;} }
+.qitem:hover{ background: rgba(255,255,255,0.07); }
+.qitem.current{ background: rgba(251,113,133,0.1); border-color: rgba(251,113,133,0.3); }
+.qitem.dragging{ opacity:0.4; }
+.qitem.drag-over{ border-color: var(--rose); }
+.qthumb-wrap{ position:relative; width:40px; height:40px; flex-shrink:0; }
+.qthumb{ width:40px; height:40px; border-radius:8px; object-fit:cover; background:#222; }
+.qplay-overlay{ position:absolute; inset:0; background: rgba(0,0,0,0.5); border-radius:8px; display:flex; align-items:center; justify-content:center; opacity:0; transition: opacity 0.15s ease; font-size:14px; }
+.qitem:hover .qplay-overlay{ opacity:1; }
+.qitem.current .qplay-overlay{ opacity:1; background: rgba(124,58,237,0.5); }
+.qinfo{ flex:1; min-width:0; }
+.qinfo .t{ font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.qinfo .a{ font-size:10.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.qactions{ display:flex; gap:2px; flex-shrink:0; }
+.qactions button{ background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:12px; padding:4px 5px; border-radius:6px; transition: all 0.15s ease; }
+.qactions button:hover{ color:var(--text); background: rgba(255,255,255,0.1); }
+.drag-handle{ cursor: grab; color: var(--text-faint); font-size:12px; padding:0 2px; }
+.drag-handle:active{ cursor: grabbing; }
+.empty-note{ color:var(--text-dim); font-size:12.5px; padding:20px 14px; text-align:center; }
+.empty-note .big-emoji{ display:block; font-size:28px; margin-bottom:8px; opacity:0.6; }
+.skeleton{ display:flex; align-items:center; gap:8px; padding:8px; border-radius:12px; margin-bottom:6px; }
+.skeleton .sk-thumb{ width:40px; height:40px; border-radius:8px; background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.1), rgba(255,255,255,0.04)); background-size:200% 100%; animation: shimmer 1.4s ease-in-out infinite; flex-shrink:0; }
+.skeleton .sk-lines{ flex:1; }
+.skeleton .sk-line{ height:9px; border-radius:4px; margin-bottom:6px; background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.1), rgba(255,255,255,0.04)); background-size:200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+.skeleton .sk-line.short{ width:60%; }
+@keyframes shimmer{ 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
 
-.extra-row{display:flex; align-items:center; justify-content:center; gap:18px; font-size:12px; color:var(--text-dim);}
-.extra-row .grp{display:flex; align-items:center; gap:8px;}
-.extra-row input[type=range]{width:80px; accent-color: var(--rose);}
-select.speed{background: var(--glass-strong); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:4px 8px; font-size:12px;}
+.toast-wrap{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center; }
+.toast{ background: rgba(20,16,32,0.92); border:1px solid var(--line); backdrop-filter: blur(12px); color:var(--text); font-size:13px; padding:10px 18px; border-radius:20px; opacity:0; transform:translateY(8px) scale(0.95); transition: all 0.3s var(--ease-spring); display:flex; align-items:center; gap:8px; }
+.toast.show{ opacity:1; transform:translateY(0) scale(1); }
+.toast.error{ border-color: var(--rose); color: var(--rose-light); }
+.toast.success{ border-color: var(--success); }
 
-.reactions-row{display:flex; justify-content:center; gap:10px; margin-top:18px;}
-.reaction-btn{background:none; border:none; font-size:22px; cursor:pointer; transition: transform 0.15s ease; opacity:0.8;}
-.reaction-btn:hover{transform: scale(1.3) translateY(-3px); opacity:1;}
-.floating-emoji{position:fixed; font-size:28px; pointer-events:none; z-index:100; animation: float-up 2.2s ease-out forwards;}
-@keyframes float-up{ 0%{transform:translateY(0) scale(0.6); opacity:0;} 15%{opacity:1; transform:translateY(-20px) scale(1.1);} 100%{transform:translateY(-160px) scale(1); opacity:0;} }
+#settingsPanel{ position:fixed; top:64px; right:22px; width:240px; background: rgba(18,14,28,0.96); border:1px solid var(--line); border-radius:16px; backdrop-filter: blur(20px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding:8px; z-index:250; display:none; animation: dropDown 0.2s var(--ease-out); }
+#settingsPanel.active{ display:block; }
+@keyframes dropDown{ from{ opacity:0; transform: translateY(-8px); } to{ opacity:1; transform:none; } }
+.settings-item{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; font-size:13px; cursor:pointer; transition: background 0.15s ease; }
+.settings-item:hover{ background: rgba(255,255,255,0.06); }
+.settings-item.danger{ color: var(--rose-light); }
 
-/* ---------- Right sidebar: search/queue/history ---------- */
-.search-box{display:flex; gap:8px; padding:10px;}
-.search-box input{flex:1; background: rgba(255,255,255,0.04); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 12px; font-size:13px; outline:none; transition: border-color 0.15s ease;}
-.search-box input:focus{border-color: var(--rose);}
-.search-box button{background: linear-gradient(135deg,var(--purple),var(--rose)); border:none; color:#fff; border-radius:10px; padding:0 16px; font-size:13px; cursor:pointer; min-width:60px;}
-.search-box button:disabled{opacity:0.5;}
-.tab-row{display:flex; gap:4px; padding:0 12px; margin-bottom:6px;}
-.tab-btn{flex:1; background:none; border:none; color:var(--text-dim); padding:8px; font-size:12px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; transition: all 0.15s ease;}
-.tab-btn.active{color:var(--text); border-bottom-color: var(--rose);}
-.list-wrap{padding:6px 10px; max-height: 46vh; overflow-y:auto;}
-.qitem{display:flex; align-items:center; gap:8px; padding:8px; border-radius:12px; margin-bottom:6px; background: rgba(255,255,255,0.03); animation: qin 0.3s ease;}
-@keyframes qin{from{opacity:0; transform:translateX(6px);} to{opacity:1; transform:none;}}
-.qitem.current{background: rgba(251,113,133,0.1); border:1px solid rgba(251,113,133,0.3);}
-.qthumb{width:40px; height:40px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#222;}
-.qinfo{flex:1; min-width:0;}
-.qinfo .t{font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.qinfo .a{font-size:10.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.qactions{display:flex; gap:2px;}
-.qactions button{background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:12px; padding:4px 5px; border-radius:6px;}
-.qactions button:hover{color:var(--text); background: rgba(255,255,255,0.08);}
-.empty-note{color:var(--text-dim); font-size:12.5px; padding:14px; text-align:center;}
+.mobile-tabs{ display:none; }
 
-.toast-wrap{position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center;}
-.toast{background: rgba(20,16,32,0.9); border:1px solid var(--line); backdrop-filter: blur(12px); color:var(--text); font-size:13px; padding:10px 18px; border-radius:20px; opacity:0; transform:translateY(8px); transition: all 0.25s ease;}
-.toast.show{opacity:1; transform:translateY(0);}
-.toast.error{border-color: var(--rose); color: var(--rose);}
-
-/* ---------- Mobile ---------- */
-.mobile-tabs{display:none;}
+/* =====================================================================
+   PERSISTENT MINI-PLAYER BAR
+   Always pinned to the bottom, like Spotify's now-playing bar — the
+   music stays visible and controllable no matter what tab/panel is open.
+   ===================================================================== */
+#miniBar{
+  position:fixed; left:0; right:0; bottom:0; z-index:180; display:flex; align-items:center; gap:12px;
+  padding:9px 18px; background: rgba(10,7,18,0.88); backdrop-filter: blur(24px); border-top:1px solid var(--line);
+  transform: translateY(100%); transition: transform 0.4s var(--ease-out);
+}
+#miniBar.show{ transform: translateY(0); }
+#miniBar .mb-thumb{ width:42px; height:42px; border-radius:8px; object-fit:cover; background: linear-gradient(135deg,#1a1130,#2a1743); flex-shrink:0; box-shadow: 0 4px 14px rgba(var(--song-accent-2),0.3); }
+#miniBar .mb-info{ min-width:0; width:160px; flex-shrink:0; }
+#miniBar .mb-title{ font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#miniBar .mb-artist{ font-size:10.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#miniBar .mb-ctl{ background: var(--glass-strong); border:1px solid var(--line); color:var(--text); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; flex-shrink:0; transition: all 0.15s ease; }
+#miniBar .mb-ctl:hover{ border-color: var(--rose); }
+#miniBar .mb-bar{ flex:1; height:3px; background: rgba(255,255,255,0.1); border-radius:2px; position:relative; cursor:pointer; min-width:60px; }
+#miniBar .mb-fill{ position:absolute; left:0; top:0; height:100%; border-radius:2px; width:0%; background: linear-gradient(90deg, rgb(var(--song-accent-2)), rgb(var(--song-accent))); transition: width 0.15s linear; }
+#miniBar .mb-heart{ background:none; border:none; color: var(--text-faint); font-size:15px; cursor:pointer; flex-shrink:0; transition: all 0.15s var(--ease-spring); }
+#miniBar .mb-heart.liked{ color: var(--rose); }
 @media (max-width: 880px){
-  #app.active{flex-direction:column;}
-  .sidebar{width:100%; border:none !important; display:none; padding:16px;}
-  .sidebar.show{display:flex;}
-  .center{padding:20px 16px 90px;}
-  .mobile-tabs{display:flex; position:fixed; bottom:0; left:0; right:0; background: rgba(15,10,25,0.85); backdrop-filter: blur(20px); border-top:1px solid var(--line); z-index:150;}
-  .mobile-tabs button{flex:1; background:none; border:none; color:var(--text-dim); padding:14px 0; font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px;}
-  .mobile-tabs button.active{color: var(--rose);}
+  #miniBar{ bottom:64px; padding:8px 12px; }
+  #miniBar .mb-info{ width:auto; flex:1; }
+}
+@media (max-width: 520px){
+  #miniBar .mb-bar{ display:none; }
+}
+@media (max-width: 880px){
+  .app-body{ flex-direction:column; }
+  .sidebar{ width:100%; border:none !important; display:none; padding:16px; max-height:60vh; }
+  .sidebar.show{ display:flex; animation: riseIn 0.25s ease; }
+  .center{ padding:20px 16px 90px; }
+  .mobile-tabs{ display:flex; position:fixed; bottom:0; left:0; right:0; background: rgba(15,10,25,0.9); backdrop-filter: blur(20px); border-top:1px solid var(--line); z-index:150; }
+  .mobile-tabs button{ flex:1; background:none; border:none; color:var(--text-dim); padding:14px 0; font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px; transition: color 0.15s ease; }
+  .mobile-tabs button.active{ color: var(--rose); }
+  #settingsPanel{ right:16px; left:16px; width:auto; }
 }
 </style>
 </head>
@@ -190,19 +339,13 @@ select.speed{background: var(--glass-strong); color:var(--text); border:1px soli
 
 <div id="particles"></div>
 
-<!-- ================= LANDING ================= -->
 <div id="landing">
   <div class="logo-mark">♥</div>
   <h1>Together</h1>
   <p class="tagline">One room. One song. Perfectly in sync — wherever you both are.</p>
-  <div class="cta-row">
-    <button class="cta primary" id="enterBtn">Enter the room</button>
-  </div>
+  <div class="cta-row"><button class="cta primary" id="enterBtn">Enter the room</button></div>
   <div class="preview-card">
-    <div class="preview-avatars">
-      <div class="av">A</div>
-      <div class="av">B</div>
-    </div>
+    <div class="preview-avatars"><div class="av">A</div><div class="av">B</div></div>
     <div class="preview-wave">
       <span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span>
       <span style="animation-delay:0.3s"></span><span style="animation-delay:0.15s"></span><span style="animation-delay:0.25s"></span>
@@ -210,94 +353,108 @@ select.speed{background: var(--glass-strong); color:var(--text); border:1px soli
     </div>
     <div class="preview-text">Listening<br><b>together, live</b></div>
   </div>
+  <div class="scroll-hint">made for two</div>
 </div>
 
-<!-- ================= APP ================= -->
 <div id="app">
-  <!-- Left sidebar -->
-  <div class="sidebar" id="sidebarLeft">
-    <div class="glass profile-row">
-      <div class="profile-av" id="profileAv">?</div>
-      <input id="nameInput" placeholder="your name" maxlength="14">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">♥</div>
+      <span class="topbar-title">Together</span>
+      <div class="conn-pill"><span class="conn-dot" id="connDot"></span><span id="connText">connecting…</span></div>
     </div>
-    <div>
-      <p class="panel-title">In the room</p>
-      <div class="glass member-list" id="memberList">
-        <p class="empty-note">Only you, so far.</p>
-      </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="notifBtn" title="Enable song-change notifications">🔔</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
     </div>
-    <div>
-      <p class="panel-title">Invite</p>
-      <div class="glass invite-row">
-        <button id="copyLinkBtn">Copy room link</button>
-      </div>
-    </div>
-    <button class="leave-btn" id="leaveBtn">Leave room</button>
   </div>
 
-  <!-- Center player -->
-  <div class="center">
-    <div class="player-card glass">
-      <div class="art-wrap" id="artWrap">
-        <img id="thumbImg" src="" alt="">
-        <div class="art-glow"></div>
+  <div class="app-body">
+    <div class="sidebar" id="sidebarLeft">
+      <div class="glass profile-row">
+        <div class="profile-av" id="profileAv">?</div>
+        <input id="nameInput" placeholder="your name" maxlength="14">
       </div>
-      <p class="song-title" id="songTitle">Nothing playing yet</p>
-      <p class="song-artist" id="songArtist">Add a song to begin</p>
-
-      <div class="waveform" id="waveform">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <div>
+        <p class="panel-title">In the room</p>
+        <div class="glass member-list" id="memberList"><p class="empty-note">Only you, so far.</p></div>
       </div>
-
-      <div class="progress-row">
-        <span class="ptime" id="curTime">0:00</span>
-        <div class="pbar" id="pbar"><div class="pbar-fill" id="pbarFill"></div><div class="pbar-knob" id="pbarKnob"></div></div>
-        <span class="ptime" id="durTime">0:00</span>
+      <div>
+        <p class="panel-title">Invite</p>
+        <div class="glass invite-row"><button id="copyLinkBtn">Copy room link</button></div>
       </div>
+      <button class="leave-btn" id="leaveBtn">Leave room</button>
+    </div>
 
-      <div class="controls-row">
-        <div class="ctl" id="shuffleBtn" title="Shuffle queue"><span>🔀</span></div>
-        <div class="ctl" id="prevBtn" title="Restart"><span>⏮</span></div>
-        <div class="ctl play" id="playBtn" title="Play/pause"><span>▶</span></div>
-        <div class="ctl" id="skipBtn" title="Skip"><span>⏭</span></div>
-        <div class="ctl" id="repeatBtn" title="Repeat queue"><span>🔁</span></div>
-      </div>
-
-      <div class="extra-row">
-        <div class="grp"><span>🔊</span><input type="range" id="volSlider" min="0" max="100" value="70"></div>
-        <div class="grp"><span>speed</span>
-          <select class="speed" id="speedSelect">
-            <option value="0.5">0.5x</option><option value="0.75">0.75x</option>
-            <option value="1" selected>1x</option><option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option><option value="2">2x</option>
-          </select>
+    <div class="center">
+      <div class="player-card glass" id="playerCard">
+        <div class="art-wrap" id="artWrap">
+          <img id="thumbImg" src="" alt="">
+          <div class="art-glow"></div>
+          <div class="art-expand-hint">tap to expand</div>
+        </div>
+        <div class="song-title-row"><p class="song-title" id="songTitle">Nothing playing yet</p></div>
+        <p class="song-artist" id="songArtist">Add a song to begin</p>
+        <div class="waveform" id="waveform">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="progress-row">
+          <span class="ptime" id="curTime">0:00</span>
+          <div class="pbar" id="pbar"><div class="pbar-fill" id="pbarFill"></div><div class="pbar-knob" id="pbarKnob"></div></div>
+          <span class="ptime" id="durTime">0:00</span>
+        </div>
+        <div class="controls-row">
+          <div class="ctl" id="shuffleBtn" title="Shuffle queue"><span>🔀</span></div>
+          <div class="ctl" id="prevBtn" title="Restart"><span>⏮</span></div>
+          <div class="ctl play" id="playBtn" title="Play/pause (space)"><span>▶</span></div>
+          <div class="ctl" id="skipBtn" title="Skip"><span>⏭</span></div>
+          <div class="ctl" id="repeatBtn" title="Repeat queue"><span>🔁</span></div>
+        </div>
+        <div class="extra-row">
+          <button class="like-btn" id="likeBtn" title="Like this song">♡</button>
+          <div class="grp"><span>🔊</span><input type="range" id="volSlider" min="0" max="100" value="70"></div>
+          <div class="grp"><span>speed</span>
+            <select class="speed" id="speedSelect">
+              <option value="0.5">0.5x</option><option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option><option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option><option value="2">2x</option>
+            </select>
+          </div>
+        </div>
+        <div class="reactions-row">
+          <button class="reaction-btn" data-emoji="❤️">❤️</button>
+          <button class="reaction-btn" data-emoji="🔥">🔥</button>
+          <button class="reaction-btn" data-emoji="🎶">🎶</button>
+          <button class="reaction-btn" data-emoji="😍">😍</button>
+          <button class="reaction-btn" data-emoji="👏">👏</button>
+        </div>
+        <div class="kbd-hint">
+          <span><kbd>space</kbd> play/pause</span>
+          <span><kbd>→</kbd> skip</span>
+          <span><kbd>←</kbd> restart</span>
+          <span><kbd>↑↓</kbd> volume</span>
         </div>
       </div>
-
-      <div class="reactions-row">
-        <button class="reaction-btn" data-emoji="❤️">❤️</button>
-        <button class="reaction-btn" data-emoji="🔥">🔥</button>
-        <button class="reaction-btn" data-emoji="🎶">🎶</button>
-        <button class="reaction-btn" data-emoji="😍">😍</button>
-        <button class="reaction-btn" data-emoji="👏">👏</button>
-      </div>
+      <div id="ytHiddenWrap" class="yt-hidden"><div id="player"></div></div>
     </div>
-    <div id="ytHiddenWrap" class="yt-hidden"><div id="player"></div></div>
-  </div>
 
-  <!-- Right sidebar -->
-  <div class="sidebar right" id="sidebarRight">
-    <div class="glass search-box">
-      <input id="urlInput" placeholder="paste a YouTube link">
-      <button id="addBtn">Add</button>
-    </div>
-    <div>
-      <div class="tab-row">
-        <button class="tab-btn active" data-tab="queue">Queue</button>
-        <button class="tab-btn" data-tab="history">History</button>
+    <div class="sidebar right" id="sidebarRight">
+      <div class="glass search-box">
+        <input id="urlInput" placeholder="paste one or several YouTube links">
+        <button class="icon-btn" id="pasteBtn" title="Paste from clipboard" style="width:38px;height:38px;flex-shrink:0;">📋</button>
+        <button id="addBtn">Add</button>
       </div>
-      <div class="glass list-wrap" id="queueList"></div>
-      <div class="glass list-wrap" id="historyList" style="display:none;"></div>
+      <div>
+        <div class="tab-row">
+          <button class="tab-btn active" data-tab="queue">Queue</button>
+          <button class="tab-btn" data-tab="history">History</button>
+          <button class="tab-btn" data-tab="liked">Liked</button>
+        </div>
+        <div class="glass list-wrap" id="queueList"></div>
+        <div class="glass list-wrap" id="historyList" style="display:none;"></div>
+        <div class="glass list-wrap" id="likedList" style="display:none;"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -306,6 +463,29 @@ select.speed{background: var(--glass-strong); color:var(--text); border:1px soli
   <button data-panel="left" class="tab-icon"><span>👥</span>Room</button>
   <button data-panel="center" class="active"><span>🎵</span>Player</button>
   <button data-panel="right"><span>📜</span>Queue</button>
+</div>
+
+<div id="miniBar">
+  <img class="mb-thumb" id="mbThumb" src="" alt="">
+  <div class="mb-info">
+    <div class="mb-title" id="mbTitle">Nothing playing</div>
+    <div class="mb-artist" id="mbArtist"></div>
+  </div>
+  <button class="mb-ctl" id="mbPrev" title="Restart"><span>⏮</span></button>
+  <button class="mb-ctl" id="mbPlay" title="Play/pause"><span>▶</span></button>
+  <button class="mb-ctl" id="mbSkip" title="Skip"><span>⏭</span></button>
+  <div class="mb-bar" id="mbBar"><div class="mb-fill" id="mbFill"></div></div>
+  <button class="mb-heart" id="mbHeart" title="Like">♡</button>
+</div>
+
+<div id="fullscreenArt">
+  <button class="fs-close" id="fsCloseBtn">✕</button>
+  <img id="fsArtImg" src="" alt="">
+</div>
+
+<div id="settingsPanel">
+  <div class="settings-item" id="clearQueueItem"><span>Clear queue</span><span>🗑</span></div>
+  <div class="settings-item danger" id="resetRoomItem"><span>Reset room</span><span>⚠</span></div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
@@ -327,298 +507,671 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const roomRef = doc(db, "duo-listen", "room");
 
-let ytPlayer=null, ytReady=false, applyingRemote=false;
-let room = { queue:[], currentIndex:-1, isPlaying:false, startedAt:0, elapsedAtPause:0, partners:{}, history:[], repeat:false, playbackRate:1 };
+let ytPlayer = null, ytReady = false, applyingRemote = false;
+let hasUnmuted = false;
+let desiredVolume = 70;
+let room = {
+  queue: [], currentIndex: -1, isPlaying: false, startedAt: 0, elapsedAtPause: 0,
+  partners: {}, history: [], repeat: false, playbackRate: 1, likes: [], reactions: []
+};
 let myName = localStorage.getItem('duo_name') || '';
 let myStatus = 'idle';
+let lastAppliedKey = '';
+let seenReactionIds = new Set();
+let notificationsEnabled = localStorage.getItem('duo_notify') === '1';
+let lastNotifiedVideoId = null;
+let draggedIndex = null;
 
-// ---------- particles ----------
-for(let i=0;i<14;i++){
-  const p=document.createElement('div');
-  p.className='aurora-particle';
-  const s=Math.random()*3+2;
-  p.style.width=s+'px'; p.style.height=s+'px';
-  p.style.left=Math.random()*100+'vw'; p.style.top=Math.random()*100+'vh';
-  p.style.animationDuration=(10+Math.random()*10)+'s';
-  p.style.animationDelay=(Math.random()*5)+'s';
+function toast(msg, kind){
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  document.getElementById('toastWrap').appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3200);
+}
+function fmtTime(s){
+  if (!isFinite(s) || s < 0) s = 0;
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+function extractVideoId(url){
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : (/^[a-zA-Z0-9_-]{11}$/.test(url.trim()) ? url.trim() : null);
+}
+/* Pulls out every YouTube video ID found in a block of text, so pasting
+   several links at once (space, comma, or newline separated) adds all
+   of them in one go instead of requiring one-at-a-time entry. */
+function extractAllVideoIds(text){
+  const ids = new Set();
+  const re = /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
+  let match;
+  while ((match = re.exec(text)) !== null) ids.add(match[1]);
+  if (ids.size === 0 && /^[a-zA-Z0-9_-]{11}$/.test(text.trim())) ids.add(text.trim());
+  return Array.from(ids);
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function initials(name){ return (name || '?').trim().slice(0, 1).toUpperCase(); }
+function isLiked(videoId){ return (room.likes || []).some(s => s.videoId === videoId); }
+
+/* Extract a dominant color from the album art and tint the whole player
+   with it — the same idea behind Spotify's "Now Playing" view adapting
+   to the cover art. Falls back silently to the default purple/rose if
+   the image can't be read (e.g. a CORS restriction). */
+const colorCache = new Map();
+function applyAccentColor(rgbString){
+  document.documentElement.style.setProperty('--song-accent', rgbString);
+}
+async function extractAndApplyAccent(videoId, imgUrl){
+  if (colorCache.has(videoId)){ applyAccentColor(colorCache.get(videoId)); return; }
+  try{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise((resolve, reject) => {
+      img.onload = resolve; img.onerror = reject; img.src = imgUrl;
+    });
+    const canvas = document.createElement('canvas');
+    const size = 24;
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let i = 0; i < data.length; i += 4){
+      const br = (data[i] + data[i+1] + data[i+2]) / 3;
+      if (br < 25 || br > 235) continue; // skip near-black/near-white pixels
+      r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+    }
+    if (count === 0){ r=251; g=113; b=133; count=1; }
+    r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+    // boost saturation slightly so muted thumbnails still read as color
+    const max = Math.max(r,g,b), min = Math.min(r,g,b);
+    if (max - min < 40){ const boost = 1.25; const avg=(r+g+b)/3; r=Math.min(255,avg+(r-avg)*boost); g=Math.min(255,avg+(g-avg)*boost); b=Math.min(255,avg+(b-avg)*boost); }
+    const rgbString = `${Math.round(r)},${Math.round(g)},${Math.round(b)}`;
+    colorCache.set(videoId, rgbString);
+    applyAccentColor(rgbString);
+  }catch(e){
+    applyAccentColor('251,113,133'); // safe default rose
+  }
+}
+
+function attachRipple(el){
+  el.addEventListener('click', (e) => {
+    const rect = el.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    const size = Math.max(rect.width, rect.height) * 1.2;
+    ripple.className = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    el.style.position = el.style.position || 'relative';
+    el.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+}
+document.querySelectorAll('.ctl, .cta, .icon-btn').forEach(attachRipple);
+
+for (let i = 0; i < 14; i++){
+  const p = document.createElement('div');
+  p.className = 'aurora-particle';
+  const s = Math.random() * 3 + 2;
+  p.style.width = s + 'px'; p.style.height = s + 'px';
+  p.style.left = Math.random() * 100 + 'vw'; p.style.top = Math.random() * 100 + 'vh';
+  p.style.animationDuration = (10 + Math.random() * 10) + 's';
+  p.style.animationDelay = (Math.random() * 5) + 's';
   document.getElementById('particles').appendChild(p);
 }
 
-function toast(msg, isError){
-  const el=document.createElement('div');
-  el.className='toast'+(isError?' error':'');
-  el.textContent=msg;
-  document.getElementById('toastWrap').appendChild(el);
-  requestAnimationFrame(()=>el.classList.add('show'));
-  setTimeout(()=>{el.classList.remove('show'); setTimeout(()=>el.remove(),300);},3200);
-}
-function fmtTime(s){ if(!isFinite(s)||s<0) s=0; const m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec.toString().padStart(2,'0')}`; }
-function extractVideoId(url){
-  const m=url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  return m?m[1]:(/^[a-zA-Z0-9_-]{11}$/.test(url.trim())?url.trim():null);
-}
-function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function initials(name){ return (name||'?').trim().slice(0,1).toUpperCase(); }
-
-// ---------- landing -> app ----------
 document.getElementById('enterBtn').onclick = () => {
-  document.getElementById('landing').style.display='none';
+  document.getElementById('landing').style.display = 'none';
   document.getElementById('app').classList.add('active');
-  if (myName){ document.getElementById('nameInput').value = myName; document.getElementById('profileAv').textContent = initials(myName); }
+  if (myName){
+    document.getElementById('nameInput').value = myName;
+    document.getElementById('profileAv').textContent = initials(myName);
+  }
 };
 
-// ---------- youtube ----------
 window.onYouTubeIframeAPIReady = function(){
   ytPlayer = new YT.Player('player', {
-    height:'200', width:'200',
-    playerVars:{ rel:0, modestbranding:1 },
-    events:{ onReady:()=>{ ytReady=true; ytPlayer.setVolume(70); syncPlayerToRoom(); }, onStateChange:onPlayerStateChange }
+    height: '180', width: '320',
+    playerVars: { rel: 0, modestbranding: 1 },
+    events: {
+      onReady: () => {
+        ytReady = true;
+        // Start muted — browsers reliably allow muted autoplay even when
+        // the play command arrives asynchronously (e.g. via a partner's
+        // action synced through Firestore) rather than from a direct,
+        // fresh click. Without this, playback can silently refuse to
+        // start at all, which looks like it's "stuck at 0:00".
+        ytPlayer.mute();
+        syncPlayerToRoom();
+      },
+      onStateChange: onPlayerStateChange
+    }
   });
 };
-function onPlayerStateChange(e){ if(applyingRemote) return; if(e.data===YT.PlayerState.ENDED) skipSong(); }
-
-// ---------- firestore sync ----------
-onSnapshot(roomRef, (snap)=>{
-  if(snap.exists()){
-    room = snap.data();
-    room.queue = room.queue || []; room.history = room.history || [];
-    if(room.currentIndex===undefined) room.currentIndex=-1;
-    room.partners = room.partners || {};
-    if(room.playbackRate===undefined) room.playbackRate=1;
-    render(); syncPlayerToRoom();
+function onPlayerStateChange(e){
+  if (e.data === YT.PlayerState.PLAYING && !hasUnmuted){
+    hasUnmuted = true;
+    try{ ytPlayer.unMute(); ytPlayer.setVolume(desiredVolume); }catch(err){}
   }
-}, ()=> toast('Connection issue — check Firestore rules.', true));
+  if (applyingRemote) return;
+  if (e.data === YT.PlayerState.ENDED) skipSong();
+}
 
-async function saveRoom(){ try{ await setDoc(roomRef, room, {merge:false}); } catch(e){ toast('Could not sync — try again.', true); } }
+onSnapshot(roomRef, (snap) => {
+  document.getElementById('connDot').classList.add('ok');
+  document.getElementById('connText').textContent = 'connected';
+  if (snap.exists()){
+    room = snap.data();
+    room.queue = room.queue || [];
+    room.history = room.history || [];
+    room.likes = room.likes || [];
+    room.reactions = room.reactions || [];
+    room.partners = room.partners || {};
+    if (room.currentIndex === undefined) room.currentIndex = -1;
+    if (room.playbackRate === undefined) room.playbackRate = 1;
+
+    render();
+    playIncomingReactions();
+
+    const song = currentSong();
+    const key = `${song ? song.videoId : 'none'}|${room.currentIndex}|${room.isPlaying}|${Math.round(room.startedAt/1000)}|${Math.round(room.elapsedAtPause)}|${room.playbackRate}`;
+    if (key !== lastAppliedKey){
+      lastAppliedKey = key;
+      syncPlayerToRoom();
+      maybeNotify(song);
+    }
+  }
+}, () => {
+  document.getElementById('connDot').classList.remove('ok');
+  document.getElementById('connText').textContent = 'reconnecting…';
+  toast('Connection issue — check Firestore rules.', 'error');
+});
+
+async function saveRoom(){
+  try{ await setDoc(roomRef, room, { merge: false }); }
+  catch(e){ toast('Could not sync — try again.', 'error'); }
+}
 function currentSong(){ return room.queue[room.currentIndex] || null; }
 
 function syncPlayerToRoom(){
-  if(!ytReady) return;
-  const song=currentSong();
-  applyingRemote=true;
-  if(song){
+  if (!ytReady) return;
+  const song = currentSong();
+  applyingRemote = true;
+  document.getElementById('playerCard').classList.toggle('is-playing', room.isPlaying && !!song);
+  if (song){
     const vd = ytPlayer.getVideoData ? ytPlayer.getVideoData() : {};
-    if(vd.video_id !== song.videoId) ytPlayer.cueVideoById(song.videoId);
-    const elapsed = room.isPlaying ? (Date.now()-room.startedAt)/1000 : room.elapsedAtPause;
-    try{ ytPlayer.setPlaybackRate(room.playbackRate||1); }catch(e){}
-    setTimeout(()=>{
+    if (vd.video_id !== song.videoId) ytPlayer.cueVideoById(song.videoId);
+    const elapsed = room.isPlaying ? (Date.now() - room.startedAt) / 1000 : room.elapsedAtPause;
+    try{ ytPlayer.setPlaybackRate(room.playbackRate || 1); }catch(e){}
+    setTimeout(() => {
       try{
-        ytPlayer.seekTo(Math.max(0,elapsed), true);
-        if(room.isPlaying) ytPlayer.playVideo(); else ytPlayer.pauseVideo();
+        ytPlayer.seekTo(Math.max(0, elapsed), true);
+        if (room.isPlaying) ytPlayer.playVideo(); else ytPlayer.pauseVideo();
       }catch(e){}
     }, 200);
   }
-  setTimeout(()=>{applyingRemote=false;}, 650);
+  setTimeout(() => { applyingRemote = false; }, 650);
 }
 
-// ---------- render ----------
-let activeTab='queue';
-function render(){
-  const song = currentSong();
-  document.getElementById('artWrap').classList.toggle('playing', room.isPlaying && !!song);
-  document.getElementById('waveform').classList.toggle('playing', room.isPlaying && !!song);
-  document.getElementById('thumbImg').src = song ? `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg` : '';
-  document.getElementById('songTitle').textContent = song ? song.title : 'Nothing playing yet';
-  document.getElementById('songArtist').textContent = song ? (song.artist || 'Unknown artist') : 'Add a song to begin';
-  document.getElementById('playBtn').innerHTML = room.isPlaying ? '<span>⏸</span>' : '<span>▶</span>';
-  document.querySelectorAll('.controls-row .ctl').forEach(b=>b.classList.toggle('disabled', !song));
-  document.getElementById('repeatBtn').classList.toggle('active', !!room.repeat);
-  document.getElementById('speedSelect').value = String(room.playbackRate||1);
-
-  // queue
-  const ql=document.getElementById('queueList');
-  ql.innerHTML = room.queue.length===0 ? '<p class="empty-note">Queue is empty — paste a link to start.</p>' :
-    room.queue.map((s,i)=>`
-      <div class="qitem ${i===room.currentIndex?'current':''}">
-        <img class="qthumb" src="https://img.youtube.com/vi/${s.videoId}/default.jpg">
-        <div class="qinfo"><div class="t">${escapeHtml(s.title)}</div><div class="a">${escapeHtml(s.artist||'')}</div></div>
-        <div class="qactions">
-          <button onclick="window.moveSong(${i},-1)" title="Move up">↑</button>
-          <button onclick="window.moveSong(${i},1)" title="Move down">↓</button>
-          <button onclick="window.removeSong(${i})" title="Remove">✕</button>
-        </div>
-      </div>`).join('');
-
-  // history
-  const hl=document.getElementById('historyList');
-  hl.innerHTML = room.history.length===0 ? '<p class="empty-note">Nothing played yet.</p>' :
-    room.history.slice().reverse().map(s=>`
-      <div class="qitem">
-        <img class="qthumb" src="https://img.youtube.com/vi/${s.videoId}/default.jpg">
-        <div class="qinfo"><div class="t">${escapeHtml(s.title)}</div><div class="a">${escapeHtml(s.artist||'')}</div></div>
-      </div>`).join('');
-
-  // members
-  const entries = Object.entries(room.partners||{});
-  const ml = document.getElementById('memberList');
-  if(entries.length===0){
-    ml.innerHTML = '<p class="empty-note">Only you, so far.</p>';
-  } else {
-    ml.innerHTML = entries.map(([n,info])=>{
-      const online = Date.now() - (info.ts||0) < 15000;
-      let status = online ? (info.status || (room.isPlaying?'listening':'paused')) : 'offline';
-      return `<div class="member">
-        <div class="m-dot ${online?'online':''}"></div>
-        <div class="m-name">${escapeHtml(n)}${n===myName?' (you)':''}</div>
-        <div class="m-status">${escapeHtml(status)}</div>
-      </div>`;
-    }).join('');
-  }
-}
-
-setInterval(()=>{
-  if(!ytReady || !room.isPlaying) return;
+setInterval(() => {
+  if (!ytReady || !room.isPlaying) return;
   try{
-    const dur=ytPlayer.getDuration()||0, cur=ytPlayer.getCurrentTime()||0;
-    document.getElementById('curTime').textContent=fmtTime(cur);
-    document.getElementById('durTime').textContent=fmtTime(dur);
-    const pct = dur? (cur/dur*100):0;
-    document.getElementById('pbarFill').style.width=pct+'%';
-    document.getElementById('pbarKnob').style.left=pct+'%';
+    const dur = ytPlayer.getDuration() || 0, cur = ytPlayer.getCurrentTime() || 0;
+    document.getElementById('curTime').textContent = fmtTime(cur);
+    document.getElementById('durTime').textContent = fmtTime(dur);
+    const pct = dur ? (cur / dur * 100) : 0;
+    document.getElementById('pbarFill').style.width = pct + '%';
+    document.getElementById('pbarKnob').style.left = pct + '%';
+    document.getElementById('mbFill').style.width = pct + '%';
+
+    const expected = (Date.now() - room.startedAt) / 1000;
+    if (Math.abs(cur - expected) > 1.5){
+      ytPlayer.seekTo(expected, true);
+    }
   }catch(e){}
 }, 400);
 
-// ---------- actions ----------
-document.getElementById('pbar').addEventListener('click', async (e)=>{
-  if(!currentSong()||!ytReady) return;
-  const rect=e.currentTarget.getBoundingClientRect();
-  const pct=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width));
-  const dur=ytPlayer.getDuration()||0; const newTime=pct*dur;
-  room.startedAt=Date.now()-newTime*1000; room.elapsedAtPause=newTime;
+let lastRenderedVideoId = null;
+function render(){
+  const song = currentSong();
+  if (song && song.videoId !== lastRenderedVideoId){
+    const img = document.getElementById('thumbImg');
+    const title = document.getElementById('songTitle');
+    const artist = document.getElementById('songArtist');
+    [img, title, artist].forEach(el => el.classList.add('crossfading'));
+    setTimeout(() => {
+      img.src = `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`;
+      title.textContent = song.title;
+      artist.textContent = song.artist || 'Unknown artist';
+      [img, title, artist].forEach(el => el.classList.remove('crossfading'));
+      extractAndApplyAccent(song.videoId, img.src);
+    }, 180);
+    lastRenderedVideoId = song.videoId;
+  } else if (!song){
+    document.getElementById('thumbImg').src = '';
+    document.getElementById('songTitle').textContent = 'Nothing playing yet';
+    document.getElementById('songArtist').textContent = 'Add a song to begin';
+    lastRenderedVideoId = null;
+  }
+
+  document.getElementById('artWrap').classList.toggle('playing', room.isPlaying && !!song);
+  document.getElementById('waveform').classList.toggle('playing', room.isPlaying && !!song);
+  document.getElementById('playBtn').innerHTML = room.isPlaying ? '<span>⏸</span>' : '<span>▶</span>';
+  document.querySelectorAll('.controls-row .ctl').forEach(b => b.classList.toggle('disabled', !song));
+  document.getElementById('repeatBtn').classList.toggle('active', !!room.repeat);
+  document.getElementById('speedSelect').value = String(room.playbackRate || 1);
+  document.getElementById('likeBtn').classList.toggle('liked', !!song && isLiked(song.videoId));
+  document.getElementById('likeBtn').textContent = (song && isLiked(song.videoId)) ? '♥' : '♡';
+
+  renderQueue();
+  renderHistory();
+  renderLiked();
+  renderMembers();
+  renderMiniBar(song);
+}
+
+function renderMiniBar(song){
+  const bar = document.getElementById('miniBar');
+  bar.classList.toggle('show', !!song);
+  if (!song) return;
+  document.getElementById('mbThumb').src = `https://img.youtube.com/vi/${song.videoId}/default.jpg`;
+  document.getElementById('mbTitle').textContent = song.title;
+  document.getElementById('mbArtist').textContent = song.artist || '';
+  document.getElementById('mbPlay').innerHTML = room.isPlaying ? '<span>⏸</span>' : '<span>▶</span>';
+  document.getElementById('mbHeart').classList.toggle('liked', isLiked(song.videoId));
+  document.getElementById('mbHeart').textContent = isLiked(song.videoId) ? '♥' : '♡';
+}
+
+function renderQueue(){
+  const ql = document.getElementById('queueList');
+  if (room.queue.length === 0){
+    ql.innerHTML = '<p class="empty-note"><span class="big-emoji">🎧</span>Queue is empty — paste a link to start.</p>';
+    return;
+  }
+  ql.innerHTML = room.queue.map((s, i) => `
+    <div class="qitem ${i === room.currentIndex ? 'current' : ''}" draggable="true" data-index="${i}">
+      <span class="drag-handle">⠿</span>
+      <div class="qthumb-wrap">
+        <img class="qthumb" src="https://img.youtube.com/vi/${s.videoId}/default.jpg">
+        <div class="qplay-overlay">${i === room.currentIndex ? (room.isPlaying ? '⏸' : '▶') : '▶'}</div>
+      </div>
+      <div class="qinfo"><div class="t">${escapeHtml(s.title)}</div><div class="a">${escapeHtml(s.artist||'')}</div></div>
+      <div class="qactions"><button class="q-remove" data-index="${i}" title="Remove">✕</button></div>
+    </div>`).join('');
+
+  ql.querySelectorAll('.qitem').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.q-remove') || e.target.closest('.drag-handle')) return;
+      const i = parseInt(el.dataset.index, 10);
+      playFromQueue(i);
+    });
+  });
+  ql.querySelectorAll('.q-remove').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); removeSong(parseInt(btn.dataset.index, 10)); });
+  });
+  attachDragAndDrop(ql);
+}
+
+function renderHistory(){
+  const hl = document.getElementById('historyList');
+  hl.innerHTML = room.history.length === 0
+    ? '<p class="empty-note"><span class="big-emoji">📜</span>Nothing played yet.</p>'
+    : room.history.slice().reverse().map(s => `
+      <div class="qitem" data-videoid="${s.videoId}">
+        <div class="qthumb-wrap"><img class="qthumb" src="https://img.youtube.com/vi/${s.videoId}/default.jpg"><div class="qplay-overlay">➕</div></div>
+        <div class="qinfo"><div class="t">${escapeHtml(s.title)}</div><div class="a">${escapeHtml(s.artist||'')}</div></div>
+      </div>`).join('');
+  hl.querySelectorAll('.qitem').forEach(el => el.addEventListener('click', () => requeueFromHistory(el.dataset.videoid)));
+}
+
+function renderLiked(){
+  const ll = document.getElementById('likedList');
+  ll.innerHTML = room.likes.length === 0
+    ? '<p class="empty-note"><span class="big-emoji">♡</span>Songs you like will show up here.</p>'
+    : room.likes.slice().reverse().map(s => `
+      <div class="qitem" data-videoid="${s.videoId}">
+        <div class="qthumb-wrap"><img class="qthumb" src="https://img.youtube.com/vi/${s.videoId}/default.jpg"><div class="qplay-overlay">➕</div></div>
+        <div class="qinfo"><div class="t">${escapeHtml(s.title)}</div><div class="a">${escapeHtml(s.artist||'')}</div></div>
+      </div>`).join('');
+  ll.querySelectorAll('.qitem').forEach(el => el.addEventListener('click', () => requeueFromHistory(el.dataset.videoid)));
+}
+
+function renderMembers(){
+  const entries = Object.entries(room.partners || {});
+  const ml = document.getElementById('memberList');
+  if (entries.length === 0){
+    ml.innerHTML = '<p class="empty-note">Only you, so far.</p>';
+    return;
+  }
+  ml.innerHTML = entries.map(([n, info]) => {
+    const online = Date.now() - (info.ts || 0) < 15000;
+    const status = online ? (info.status || (room.isPlaying ? 'listening' : 'paused')) : 'offline';
+    return `<div class="member">
+      <div class="m-dot ${online ? 'online' : ''}"></div>
+      <div class="m-name">${escapeHtml(n)}${n === myName ? ' (you)' : ''}</div>
+      <div class="m-status ${online && status !== 'listening' && status !== 'paused' ? 'live' : ''}">${escapeHtml(status)}</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('pbar').addEventListener('click', async (e) => {
+  if (!currentSong() || !ytReady) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  const dur = ytPlayer.getDuration() || 0;
+  const newTime = pct * dur;
+  room.startedAt = Date.now() - newTime * 1000;
+  room.elapsedAtPause = newTime;
   await saveRoom();
 });
-document.getElementById('volSlider').addEventListener('input', e=>{ if(ytReady) ytPlayer.setVolume(Number(e.target.value)); });
-document.getElementById('speedSelect').addEventListener('change', async e=>{
+document.getElementById('volSlider').addEventListener('input', (e) => {
+  desiredVolume = Number(e.target.value);
+  if (ytReady) ytPlayer.setVolume(desiredVolume);
+});
+document.getElementById('speedSelect').addEventListener('change', async (e) => {
   room.playbackRate = parseFloat(e.target.value);
-  if(ytReady) try{ ytPlayer.setPlaybackRate(room.playbackRate); }catch(err){}
+  if (ytReady) try{ ytPlayer.setPlaybackRate(room.playbackRate); }catch(err){}
   await saveRoom();
 });
 
-async function addSong(){
-  const input=document.getElementById('urlInput'), btn=document.getElementById('addBtn');
-  const id=extractVideoId(input.value.trim());
-  if(!id){ toast("That doesn't look like a valid YouTube link.", true); return; }
-  btn.disabled=true; btn.textContent='...';
-  let title='Untitled song', artist='';
-  try{
-    const r=await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
-    if(r.ok){ const j=await r.json(); title=j.title; artist=j.author_name||''; }
-  }catch(e){}
-  room.queue.push({videoId:id, title, artist});
-  if(room.currentIndex===-1){ room.currentIndex=0; room.isPlaying=true; room.startedAt=Date.now(); room.elapsedAtPause=0; }
-  input.value='';
+async function addSong(rawText){
+  const input = document.getElementById('urlInput'), btn = document.getElementById('addBtn');
+  const text = rawText !== undefined ? rawText : input.value.trim();
+  const ids = extractAllVideoIds(text);
+  if (ids.length === 0){ toast("That doesn't look like a valid YouTube link.", 'error'); return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  showSkeleton();
+
+  const fetched = await Promise.all(ids.map(async (id) => {
+    let title = 'Untitled song', artist = '';
+    try{
+      const r = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
+      if (r.ok){ const j = await r.json(); title = j.title; artist = j.author_name || ''; }
+    }catch(e){}
+    return { videoId: id, title, artist };
+  }));
+
+  fetched.forEach(song => room.queue.push(song));
+  if (room.currentIndex === -1 && room.queue.length > 0){
+    room.currentIndex = 0; room.isPlaying = true; room.startedAt = Date.now(); room.elapsedAtPause = 0;
+  }
+  input.value = '';
   await saveRoom();
-  toast('Added to the queue.');
-  btn.disabled=false; btn.textContent='Add';
+  toast(ids.length === 1 ? 'Added to the queue.' : `Added ${ids.length} songs to the queue.`, 'success');
+  btn.disabled = false; btn.textContent = 'Add';
 }
-window.removeSong = async function(i){
-  const removed = room.queue.splice(i,1)[0];
-  if(i<room.currentIndex) room.currentIndex--;
-  if(i===room.currentIndex){
-    room.elapsedAtPause=0; room.startedAt=Date.now();
-    if(room.currentIndex>=room.queue.length) room.currentIndex=room.queue.length-1;
+function showSkeleton(){
+  const ql = document.getElementById('queueList');
+  const sk = document.createElement('div');
+  sk.className = 'skeleton';
+  sk.innerHTML = `<div class="sk-thumb"></div><div class="sk-lines"><div class="sk-line"></div><div class="sk-line short"></div></div>`;
+  ql.prepend(sk);
+  setTimeout(() => sk.remove(), 1200);
+}
+
+async function playFromQueue(i){
+  if (i < 0 || i >= room.queue.length) return;
+  room.currentIndex = i;
+  room.isPlaying = true;
+  room.startedAt = Date.now();
+  room.elapsedAtPause = 0;
+  await saveRoom();
+}
+async function requeueFromHistory(videoId){
+  const found = [...room.history, ...room.likes].find(s => s.videoId === videoId);
+  if (!found) return;
+  room.queue.push({ ...found });
+  if (room.currentIndex === -1){ room.currentIndex = 0; room.isPlaying = true; room.startedAt = Date.now(); room.elapsedAtPause = 0; }
+  await saveRoom();
+  toast('Added to queue.', 'success');
+}
+async function removeSong(i){
+  room.queue.splice(i, 1);
+  if (i < room.currentIndex) room.currentIndex--;
+  if (i === room.currentIndex){
+    room.elapsedAtPause = 0; room.startedAt = Date.now();
+    if (room.currentIndex >= room.queue.length) room.currentIndex = room.queue.length - 1;
   }
   await saveRoom();
-};
-window.moveSong = async function(i, dir){
-  const j=i+dir;
-  if(j<0||j>=room.queue.length) return;
-  [room.queue[i], room.queue[j]] = [room.queue[j], room.queue[i]];
-  if(room.currentIndex===i) room.currentIndex=j;
-  else if(room.currentIndex===j) room.currentIndex=i;
-  await saveRoom();
-};
+}
 async function togglePlay(){
-  if(!currentSong()) return;
-  if(room.isPlaying){ room.elapsedAtPause=(Date.now()-room.startedAt)/1000; room.isPlaying=false; }
-  else { room.startedAt=Date.now()-room.elapsedAtPause*1000; room.isPlaying=true; }
+  if (!currentSong()) return;
+  if (room.isPlaying){ room.elapsedAtPause = (Date.now() - room.startedAt) / 1000; room.isPlaying = false; }
+  else { room.startedAt = Date.now() - room.elapsedAtPause * 1000; room.isPlaying = true; }
   await saveRoom();
 }
 async function skipSong(){
-  if(!currentSong()) return;
+  if (!currentSong()) return;
   const finished = currentSong();
   room.history.push(finished);
-  if(room.history.length>30) room.history.shift();
-  if(room.currentIndex < room.queue.length-1){ room.currentIndex++; }
-  else if(room.repeat && room.queue.length>0){ room.currentIndex=0; }
-  else { room.currentIndex = room.queue.length-1; room.isPlaying=false; }
-  room.startedAt=Date.now(); room.elapsedAtPause=0;
-  if(room.currentIndex>=0 && (room.currentIndex<room.queue.length-1 || room.repeat || room.queue.length===1)) room.isPlaying = room.queue.length>0;
+  if (room.history.length > 30) room.history.shift();
+  if (room.currentIndex < room.queue.length - 1){ room.currentIndex++; }
+  else if (room.repeat && room.queue.length > 0){ room.currentIndex = 0; }
+  else { room.currentIndex = room.queue.length - 1; room.isPlaying = false; }
+  room.startedAt = Date.now(); room.elapsedAtPause = 0;
+  if (room.currentIndex >= 0 && (room.currentIndex < room.queue.length - 1 || room.repeat || room.queue.length === 1)) room.isPlaying = room.queue.length > 0;
   await saveRoom();
 }
-async function restartSong(){ if(!currentSong()) return; room.startedAt=Date.now(); room.elapsedAtPause=0; await saveRoom(); }
+async function restartSong(){ if (!currentSong()) return; room.startedAt = Date.now(); room.elapsedAtPause = 0; await saveRoom(); }
 async function toggleRepeat(){ room.repeat = !room.repeat; await saveRoom(); }
 async function shuffleQueue(){
-  if(room.queue.length<3) { toast('Add a few more songs to shuffle.'); return; }
+  if (room.queue.length < 3){ toast('Add a few more songs to shuffle.'); return; }
   const cur = room.queue[room.currentIndex];
-  const rest = room.queue.filter((_,i)=>i!==room.currentIndex);
-  for(let i=rest.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [rest[i],rest[j]]=[rest[j],rest[i]]; }
+  const rest = room.queue.filter((_, i) => i !== room.currentIndex);
+  for (let i = rest.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
   room.queue = [cur, ...rest];
   room.currentIndex = 0;
   await saveRoom();
-  toast('Queue shuffled.');
+  toast('Queue shuffled.', 'success');
+}
+async function toggleLike(){
+  const song = currentSong();
+  if (!song) return;
+  if (isLiked(song.videoId)) room.likes = room.likes.filter(s => s.videoId !== song.videoId);
+  else room.likes.push({ ...song });
+  await saveRoom();
 }
 async function heartbeat(){
-  if(!myName) return;
+  if (!myName) return;
   room.partners = room.partners || {};
   room.partners[myName] = { ts: Date.now(), status: myStatus };
   await saveRoom();
 }
 
-document.getElementById('addBtn').onclick = addSong;
-document.getElementById('urlInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addSong(); });
-document.getElementById('urlInput').addEventListener('input', e=>{ myStatus = e.target.value.trim() ? 'searching…' : 'idle'; });
+function attachDragAndDrop(container){
+  container.querySelectorAll('.qitem').forEach(el => {
+    el.addEventListener('dragstart', () => {
+      draggedIndex = parseInt(el.dataset.index, 10);
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    el.addEventListener('dragover', (e) => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const targetIndex = parseInt(el.dataset.index, 10);
+      if (draggedIndex === null || draggedIndex === targetIndex) return;
+      const moved = room.queue.splice(draggedIndex, 1)[0];
+      room.queue.splice(targetIndex, 0, moved);
+      if (room.currentIndex === draggedIndex) room.currentIndex = targetIndex;
+      else if (draggedIndex < room.currentIndex && targetIndex >= room.currentIndex) room.currentIndex--;
+      else if (draggedIndex > room.currentIndex && targetIndex <= room.currentIndex) room.currentIndex++;
+      draggedIndex = null;
+      await saveRoom();
+    });
+  });
+}
+
+function spawnEmoji(emoji, x, y){
+  const el = document.createElement('div');
+  el.className = 'floating-emoji'; el.textContent = emoji;
+  el.style.left = (x - 14) + 'px'; el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2300);
+}
+async function sendReaction(emoji){
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+  room.reactions = (room.reactions || []).filter(r => Date.now() - r.ts < 8000);
+  room.reactions.push({ id, emoji, ts: Date.now(), by: myName });
+  seenReactionIds.add(id);
+  spawnEmoji(emoji, window.innerWidth / 2, window.innerHeight - 160);
+  await saveRoom();
+}
+function playIncomingReactions(){
+  (room.reactions || []).forEach(r => {
+    if (!seenReactionIds.has(r.id) && Date.now() - r.ts < 4000){
+      seenReactionIds.add(r.id);
+      const x = window.innerWidth / 2 + (Math.random() * 80 - 40);
+      spawnEmoji(r.emoji, x, window.innerHeight - 160);
+    }
+  });
+}
+document.querySelectorAll('.reaction-btn').forEach(btn => {
+  btn.addEventListener('click', () => sendReaction(btn.dataset.emoji));
+});
+
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+  if (e.code === 'Space'){ e.preventDefault(); togglePlay(); }
+  else if (e.code === 'ArrowRight'){ skipSong(); }
+  else if (e.code === 'ArrowLeft'){ restartSong(); }
+  else if (e.code === 'ArrowUp'){ e.preventDefault(); const v = document.getElementById('volSlider'); v.value = Math.min(100, Number(v.value) + 5); if (ytReady) ytPlayer.setVolume(Number(v.value)); }
+  else if (e.code === 'ArrowDown'){ e.preventDefault(); const v = document.getElementById('volSlider'); v.value = Math.max(0, Number(v.value) - 5); if (ytReady) ytPlayer.setVolume(Number(v.value)); }
+});
+
+function updateNotifBtn(){
+  document.getElementById('notifBtn').style.opacity = notificationsEnabled ? '1' : '0.5';
+}
+document.getElementById('notifBtn').addEventListener('click', async () => {
+  if (!('Notification' in window)){ toast('Notifications are not supported in this browser.', 'error'); return; }
+  if (Notification.permission !== 'granted'){
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted'){ toast('Notification permission was not granted.'); return; }
+  }
+  notificationsEnabled = !notificationsEnabled;
+  localStorage.setItem('duo_notify', notificationsEnabled ? '1' : '0');
+  updateNotifBtn();
+  toast(notificationsEnabled ? 'Song-change notifications on.' : 'Notifications off.');
+});
+function maybeNotify(song){
+  if (!notificationsEnabled || !song || song.videoId === lastNotifiedVideoId) return;
+  if (document.visibilityState === 'visible') return;
+  if ('Notification' in window && Notification.permission === 'granted'){
+    lastNotifiedVideoId = song.videoId;
+    new Notification('Now playing', { body: `${song.title}${song.artist ? ' — ' + song.artist : ''}`, silent: true });
+  }
+}
+updateNotifBtn();
+
+document.getElementById('settingsBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('settingsPanel').classList.toggle('active');
+});
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('settingsPanel');
+  if (panel.classList.contains('active') && !panel.contains(e.target) && e.target.id !== 'settingsBtn'){
+    panel.classList.remove('active');
+  }
+});
+document.getElementById('clearQueueItem').addEventListener('click', async () => {
+  room.queue = []; room.currentIndex = -1; room.isPlaying = false;
+  await saveRoom();
+  document.getElementById('settingsPanel').classList.remove('active');
+  toast('Queue cleared.');
+});
+document.getElementById('resetRoomItem').addEventListener('click', async () => {
+  if (!confirm('Reset the whole room? This clears the queue, history, and likes for both of you.')) return;
+  room = { queue: [], currentIndex: -1, isPlaying: false, startedAt: 0, elapsedAtPause: 0, partners: room.partners, history: [], repeat: false, playbackRate: 1, likes: [], reactions: [] };
+  await saveRoom();
+  document.getElementById('settingsPanel').classList.remove('active');
+  toast('Room reset.');
+});
+
+document.getElementById('artWrap').addEventListener('click', () => {
+  const song = currentSong();
+  if (!song) return;
+  document.getElementById('fsArtImg').src = `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`;
+  document.getElementById('fullscreenArt').classList.add('active');
+});
+document.getElementById('fsCloseBtn').addEventListener('click', () => document.getElementById('fullscreenArt').classList.remove('active'));
+document.getElementById('fullscreenArt').addEventListener('click', (e) => { if (e.target.id === 'fullscreenArt') e.currentTarget.classList.remove('active'); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('fullscreenArt').classList.remove('active'); });
+
+document.getElementById('addBtn').onclick = () => addSong();
+document.getElementById('urlInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') addSong(); });
+document.getElementById('urlInput').addEventListener('input', (e) => { myStatus = e.target.value.trim() ? 'searching…' : 'idle'; });
+// Auto-add the moment a valid YouTube link (or several) is pasted in —
+// no need to click "Add" at all, which is the "much easier" link flow.
+document.getElementById('urlInput').addEventListener('paste', () => {
+  setTimeout(() => {
+    const val = document.getElementById('urlInput').value;
+    if (extractAllVideoIds(val).length > 0) addSong(val);
+  }, 0);
+});
+document.getElementById('pasteBtn').addEventListener('click', async () => {
+  try{
+    const text = await navigator.clipboard.readText();
+    if (extractAllVideoIds(text).length === 0){ toast('Clipboard doesn\'t contain a YouTube link.', 'error'); return; }
+    addSong(text);
+  }catch(e){ toast('Could not read clipboard — try pasting into the box instead.', 'error'); }
+});
 document.getElementById('playBtn').onclick = togglePlay;
 document.getElementById('skipBtn').onclick = skipSong;
 document.getElementById('prevBtn').onclick = restartSong;
 document.getElementById('repeatBtn').onclick = toggleRepeat;
 document.getElementById('shuffleBtn').onclick = shuffleQueue;
-document.getElementById('nameInput').addEventListener('input', e=>{
+document.getElementById('likeBtn').onclick = toggleLike;
+document.getElementById('nameInput').addEventListener('input', (e) => {
   myName = e.target.value.trim();
   document.getElementById('profileAv').textContent = initials(myName);
   localStorage.setItem('duo_name', myName);
 });
-document.getElementById('copyLinkBtn').onclick = async ()=>{
-  try{ await navigator.clipboard.writeText(window.location.href); toast('Link copied — send it to them!'); }
-  catch(e){ toast('Could not copy — copy the URL manually.', true); }
+document.getElementById('copyLinkBtn').onclick = async () => {
+  try{ await navigator.clipboard.writeText(window.location.href); toast('Link copied — send it to them!', 'success'); }
+  catch(e){ toast('Could not copy — copy the URL manually.', 'error'); }
 };
-document.getElementById('leaveBtn').onclick = ()=>{
+document.getElementById('leaveBtn').onclick = () => {
   document.getElementById('app').classList.remove('active');
-  document.getElementById('landing').style.display='flex';
+  document.getElementById('landing').style.display = 'flex';
 };
-
-// reactions
-document.querySelectorAll('.reaction-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    spawnEmoji(btn.dataset.emoji, window.innerWidth/2, window.innerHeight-160);
-  });
-});
-function spawnEmoji(emoji, x, y){
-  const el=document.createElement('div');
-  el.className='floating-emoji'; el.textContent=emoji;
-  el.style.left=(x-14)+'px'; el.style.top=y+'px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 2300);
-}
-
-// tabs (queue/history)
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active'); activeTab=btn.dataset.tab;
-    document.getElementById('queueList').style.display = activeTab==='queue' ? 'block':'none';
-    document.getElementById('historyList').style.display = activeTab==='history' ? 'block':'none';
-  });
+document.getElementById('mbPlay').onclick = togglePlay;
+document.getElementById('mbSkip').onclick = skipSong;
+document.getElementById('mbPrev').onclick = restartSong;
+document.getElementById('mbHeart').onclick = toggleLike;
+document.getElementById('mbBar').addEventListener('click', async (e) => {
+  if (!currentSong() || !ytReady) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  const dur = ytPlayer.getDuration() || 0;
+  const newTime = pct * dur;
+  room.startedAt = Date.now() - newTime * 1000;
+  room.elapsedAtPause = newTime;
+  await saveRoom();
 });
 
-// mobile bottom tabs
-document.querySelectorAll('#mobileTabs button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#mobileTabs button').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const panel=btn.dataset.panel;
-    document.getElementById('sidebarLeft').classList.toggle('show', panel==='left');
-    document.getElementById('sidebarRight').classList.toggle('show', panel==='right');
+    const tab = btn.dataset.tab;
+    document.getElementById('queueList').style.display = tab === 'queue' ? 'block' : 'none';
+    document.getElementById('historyList').style.display = tab === 'history' ? 'block' : 'none';
+    document.getElementById('likedList').style.display = tab === 'liked' ? 'block' : 'none';
+  });
+});
+document.querySelectorAll('#mobileTabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#mobileTabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const panel = btn.dataset.panel;
+    document.getElementById('sidebarLeft').classList.toggle('show', panel === 'left');
+    document.getElementById('sidebarRight').classList.toggle('show', panel === 'right');
   });
 });
 
