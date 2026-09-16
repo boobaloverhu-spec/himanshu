@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Duo Listen - Modern Music Player</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* CSS (see next section) */
+    <?php include 'styles.css'; ?>
+  </style>
+</head>
+<body>
+  <div class="player-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Duo Listen</h1>
+      <p>A modern music player</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Search YouTube Music">
+      <button onclick="searchYouTube()"><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Spotify Import Button -->
+    <button class="spotify-btn" onclick="loginWithSpotify()">
+      <i class="fab fa-spotify"></i> Import Spotify Playlist
+    </button>
+
+    <!-- Playlist -->
+    <div class="playlist" id="playlist">
+      <h2>Your Playlist</h2>
+      <div class="tracks" id="tracks">
+        <!-- Tracks will be added here -->
+      </div>
+    </div>
+
+    <!-- Now Playing -->
+    <div class="now-playing">
+      <img id="album-art" src="https://via.placeholder.com/60" alt="Album Art">
+      <div class="track-info">
+        <h3 id="track-title">No track selected</h3>
+        <p id="track-artist">Artist</p>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button onclick="skipTrack('prev')"><i class="fas fa-step-backward"></i></button>
+      <button onclick="togglePlay()"><i class="fas fa-play" id="play-icon"></i></button>
+      <button onclick="skipTrack('next')"><i class="fas fa-step-forward"></i></button>
+    </div>
+  </div>
+
+  <!-- YouTube API Script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    // JavaScript (see next section)
+    <?php include 'script.js'; ?>
+  </script>
+</body>
+</html>
