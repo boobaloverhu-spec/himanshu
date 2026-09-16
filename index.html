@@ -918,14 +918,6 @@
     let lastSyncTime = 0;
     let progressInterval = null;
 
-    // Demo tracks for testing (no API needed)
-    const demoTracks = [
-      { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', artist: 'Rick Astley', thumb: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg', duration: 212 },
-      { id: '9bZkp7q19f0', title: 'Gangnam Style', artist: 'PSY', thumb: 'https://i.ytimg.com/vi/9bZkp7q19f0/default.jpg', duration: 252 },
-      { id: 'kJQP7kiw5Fk', title: 'Despacito', artist: 'Luis Fonsi', thumb: 'https://i.ytimg.com/vi/kJQP7kiw5Fk/default.jpg', duration: 282 },
-      { id: 'fJ9rUzIMcZQ', title: 'Bohemian Rhapsody', artist: 'Queen', thumb: 'https://i.ytimg.com/vi/fJ9rUzIMcZQ/default.jpg', duration: 354 },
-      { id: 'YQHsXMglC9A', title: 'Hello', artist: 'Adele', thumb: 'https://i.ytimg.com/vi/YQHsXMglC9A/default.jpg', duration: 367 }
-    ];
 
     // Initialize queue with demo tracks
     queue = [...demoTracks];
@@ -1063,7 +1055,10 @@
     }
 
     function listenToRoom(code) {
+        let throttleTimer = null;  // ADD THIS LINE
       db.ref('rooms/' + code).on('value', (snapshot) => {
+          if (throttleTimer) return;  
+         throttleTimer = setTimeout(() => { throttleTimer = null; }, 300); 
         const data = snapshot.val();
         if (!data) return;
 
@@ -1098,22 +1093,16 @@
     }
 
     async function syncState() {
-      if (!currentRoom || !isHost || !player) return;
-      
-      const currentTime = player.getCurrentTime ? player.getCurrentTime() : 0;
-      const duration = player.getDuration ? player.getDuration() : 0;
-      const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-      
-      await db.ref('rooms/' + currentRoom).update({
-        trackIndex: currentTrackIndex,
-        isPlaying: isPlaying,
-        currentTime: currentTime,
-        progress: progress,
-        queue: queue.slice(0, 10),
-        lastSync: Date.now()
-      });
-    }
-
+  if (!currentRoom || !isHost || !player) return;
+  // Sync ONLY on actions, not every second
+  const currentTime = player.getCurrentTime ? player.getCurrentTime() : 0;
+  db.ref('rooms/' + currentRoom).update({
+    trackIndex: currentTrackIndex,
+    isPlaying: isPlaying,
+    currentTime: currentTime,
+    lastSync: Date.now()
+  });
+}
     // Track Functions
     function loadTrack(index, sync = true) {
       if (index < 0 || index >= queue.length) return;
