@@ -6,7 +6,153 @@
   <title>Duo Listen - Modern Music Player</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --primary: #6C5CE7;
+      --secondary: #A29BFE;
+      --dark: #1a1a2e;
+      --darker: #16213e;
+      --light: #F5F6FA;
+      --accent: #00d2d3;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .player-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header { text-align: center; margin-bottom: 25px; }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+    .header p { color: var(--secondary); font-size: 0.9rem; }
+    .search-container { display: flex; margin-bottom: 20px; gap: 10px; }
+    .search-container input {
+      flex: 1; padding: 12px 15px; border: none; border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1); color: var(--light);
+      font-size: 0.9rem; outline: none; transition: all 0.3s;
+    }
+    .search-container input:focus {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .search-container input::placeholder { color: rgba(255, 255, 255, 0.5); }
+    .search-container button {
+      padding: 12px 20px; border: none; background: var(--primary);
+      color: white; border-radius: 10px; cursor: pointer;
+      transition: all 0.3s; font-size: 1rem;
+    }
+    .search-container button:hover {
+      background: var(--secondary); transform: scale(1.05);
+    }
+    .spotify-btn {
+      width: 100%; padding: 12px; background: #1DB954; color: white;
+      border: none; border-radius: 10px; margin-bottom: 25px;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 10px; font-size: 0.95rem;
+      font-weight: 600; transition: all 0.3s;
+    }
+    .spotify-btn:hover {
+      background: #1ED760; transform: scale(1.02);
+      box-shadow: 0 5px 20px rgba(29, 185, 84, 0.4);
+    }
+    .playlist h2 { font-size: 1.1rem; margin-bottom: 15px; color: var(--secondary); }
+    .tracks { max-height: 200px; overflow-y: auto; margin-bottom: 25px; }
+    .tracks::-webkit-scrollbar { width: 6px; }
+    .tracks::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+    .tracks::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+    .track {
+      display: flex; align-items: center; padding: 12px;
+      background: rgba(255, 255, 255, 0.05); border-radius: 10px;
+      margin-bottom: 10px; cursor: pointer; transition: all 0.3s;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .track:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
+    .track img { width: 50px; height: 50px; border-radius: 8px; margin-right: 12px; object-fit: cover; }
+    .track .track-info h4 { font-size: 0.95rem; margin-bottom: 3px; color: var(--light); }
+    .track .track-info p { font-size: 0.8rem; color: var(--secondary); }
+    .now-playing {
+      display: flex; align-items: center; padding: 15px;
+      background: rgba(108, 92, 231, 0.2); border-radius: 12px;
+      margin-bottom: 20px; border: 1px solid rgba(108, 92, 231, 0.3);
+    }
+    .now-playing img {
+      width: 70px; height: 70px; border-radius: 10px;
+      margin-right: 15px; object-fit: cover; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(108, 92, 231, 0); }
+    }
+    .now-playing .track-info h3 { font-size: 1rem; margin-bottom: 5px; color: var(--light); }
+    .now-playing .track-info p { font-size: 0.85rem; color: var(--secondary); }
+    .progress-container {
+      width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px; margin-bottom: 25px; cursor: pointer; overflow: hidden;
+    }
+    .progress {
+      height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px; width: 0%; transition: width 0.1s linear; position: relative;
+    }
+    .progress::after {
+      content: ''; position: absolute; right: 0; top: 50%;
+      transform: translateY(-50%); width: 12px; height: 12px;
+      background: var(--light); border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .controls { display: flex; justify-content: center; align-items: center; gap: 25px; }
+    .controls button {
+      width: 55px; height: 55px; border-radius: 50%; border: none;
+      background: rgba(255, 255, 255, 0.1); color: var(--light);
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem; transition: all 0.3s;
+    }
+    .controls button:hover {
+      background: var(--primary); transform: scale(1.1);
+      box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+    }
+    .controls button:nth-child(2) {
+      width: 65px; height: 65px; background: var(--primary);
+      font-size: 1.5rem;
+    }
+    .controls button:nth-child(2):hover {
+      background: var(--secondary); transform: scale(1.15);
+    }
+    @media (max-width: 480px) {
+      .player-container { padding: 20px; }
+      .header h1 { font-size: 1.5rem; }
+      .controls button { width: 45px; height: 45px; }
+      .controls button:nth-child(2) { width: 55px; height: 55px; }
+    }
+  </style>
 </head>
 <body>
   <div class="player-container">
@@ -14,27 +160,24 @@
       <h1>🎵 Duo Listen</h1>
       <p>A modern music player</p>
     </div>
-
     <div class="search-container">
       <input type="text" id="search" placeholder="Search YouTube Music...">
       <button onclick="searchYouTube()"><i class="fas fa-search"></i></button>
     </div>
-
     <button class="spotify-btn" onclick="importSpotify()">
       <i class="fab fa-spotify"></i> Import Spotify Playlist
     </button>
-
     <div class="playlist">
       <h2>Your Playlist</h2>
       <div class="tracks" id="tracks">
-        <div class="track" onclick="playSample(0)">
+        <div class="track" onclick="playTrack(0)">
           <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" alt="Track">
           <div class="track-info">
             <h4>Never Gonna Give You Up</h4>
             <p>Rick Astley</p>
           </div>
         </div>
-        <div class="track" onclick="playSample(1)">
+        <div class="track" onclick="playTrack(1)">
           <img src="https://i.ytimg.com/vi/9bZkp7q19f0/default.jpg" alt="Track">
           <div class="track-info">
             <h4>Gangnam Style</h4>
@@ -43,28 +186,95 @@
         </div>
       </div>
     </div>
-
     <div class="now-playing">
-      <img id="album-art" src="https://via.placeholder.com/60" alt="Album Art">
+      <img id="album-art" src="https://via.placeholder.com/70" alt="Album Art">
       <div class="track-info">
-        <h3 id="track-title">No track selected</h3>
-        <p id="track-artist">Artist</p>
+        <h3 id="track-title">Select a track</h3>
+        <p id="track-artist">Click any song above</p>
       </div>
     </div>
-
     <div class="progress-container" onclick="seek(event)">
       <div class="progress" id="progress"></div>
     </div>
-
     <div class="controls">
       <button onclick="prevTrack()"><i class="fas fa-step-backward"></i></button>
       <button onclick="togglePlay()" id="play-btn"><i class="fas fa-play"></i></button>
       <button onclick="nextTrack()"><i class="fas fa-step-forward"></i></button>
     </div>
   </div>
-
   <div id="player"></div>
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="script.js"></script>
+  <script>
+    let player, isPlaying = false, currentTrack = 0, progressInterval;
+    const tracks = [
+      { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', artist: 'Rick Astley', thumb: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg' },
+      { id: '9bZkp7q19f0', title: 'Gangnam Style', artist: 'PSY', thumb: 'https://i.ytimg.com/vi/9bZkp7q19f0/default.jpg' }
+    ];
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', { height: '0', width: '0', events: { 'onStateChange': onPlayerStateChange } });
+    }
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        document.querySelector('#play-btn i').className = 'fas fa-pause';
+        startProgress();
+      } else {
+        isPlaying = false;
+        document.querySelector('#play-btn i').className = 'fas fa-play';
+        clearInterval(progressInterval);
+      }
+    }
+    function playTrack(index) {
+      currentTrack = index;
+      const track = tracks[index];
+      document.getElementById('track-title').textContent = track.title;
+      document.getElementById('track-artist').textContent = track.artist;
+      document.getElementById('album-art').src = track.thumb;
+      if (player && player.loadVideoById) player.loadVideoById(track.id);
+    }
+    function togglePlay() {
+      if (!player) return;
+      if (isPlaying) player.pauseVideo();
+      else {
+        if (player.getPlayerState() === YT.PlayerState.ENDED) playTrack(currentTrack);
+        else player.playVideo();
+      }
+    }
+    function prevTrack() {
+      let newIndex = currentTrack - 1;
+      if (newIndex < 0) newIndex = tracks.length - 1;
+      playTrack(newIndex);
+    }
+    function nextTrack() {
+      let newIndex = currentTrack + 1;
+      if (newIndex >= tracks.length) newIndex = 0;
+      playTrack(newIndex);
+    }
+    function startProgress() {
+      clearInterval(progressInterval);
+      progressInterval = setInterval(() => {
+        if (player && player.getCurrentTime && player.getDuration) {
+          const current = player.getCurrentTime();
+          const duration = player.getDuration();
+          if (duration > 0) document.getElementById('progress').style.width = (current / duration * 100) + '%';
+        }
+      }, 1000);
+    }
+    function seek(event) {
+      const container = document.querySelector('.progress-container');
+      const clickX = event.offsetX;
+      const width = container.offsetWidth;
+      const percent = clickX / width;
+      if (player && player.getDuration) player.seekTo(player.getDuration() * percent);
+    }
+    function searchYouTube() {
+      const query = document.getElementById('search').value;
+      if (!query) return;
+      alert('Search needs YouTube API key. Click sample tracks to play!');
+    }
+    function importSpotify() {
+      alert('Spotify needs API setup. Click sample tracks to play!');
+    }
+  </script>
 </body>
 </html>
